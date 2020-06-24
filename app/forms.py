@@ -28,3 +28,5 @@ class curieForm(FlaskForm):
     center_x = DecimalField('Center X',default=0)
     center_y = DecimalField('Center Y',default=0)
     center_z = DecimalField('Center Z',default=0)
+
+    email = StringField('Email', validators=[DataRequired(), Email()])
