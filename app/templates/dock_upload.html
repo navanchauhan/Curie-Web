@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h2>Enter Your Configuration</h2>
+    <form action="{{ url_for('dock_upload') }}" method="post" enctype="multipart/form-data">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.description.label }}
+            {{ form.description(class="form-control") }}
+        </div>
+        <div class="form-row">
+            <div class="col">
+            {{ form.size_x.label }}
+            {{ form.size_x(class="form-control")}}
+            </div>
+            <div class="col">
+                {{ form.size_y.label }}
+                {{ form.size_y(class="form-control")}}
+            </div>
+            <div class="col">
+                {{ form.size_z.label }}
+                {{ form.size_z(class="form-control")}}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+            {{ form.center_x.label }}
+            {{ form.center_x(class="form-control")}}
+            </div>
+            <div class="col">
+                {{ form.center_y.label }}
+                {{ form.center_y(class="form-control")}}
+            </div>
+            <div class="col">
+                {{ form.center_z.label }}
+                {{ form.center_z(class="form-control")}}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                {{ form.target.label }}
+                {{ form.target(class="form-control") }}
+            </div>
+            <div class="col">
+                {{ form.ligand.label }}
+                {{ form.ligand(class="form-control")}}
+            </div>
+        </div>
+
+        <button class="btn btn-primary">Upload</button>
+    </form>
+{% endblock %}
