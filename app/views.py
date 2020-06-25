@@ -23,6 +23,11 @@ def home():
     """Render website's home page."""
     return render_template('home.html')
 
+@app.route('/About')
+def about():
+    """Render about page."""
+    return render_template('about.html')
+
 
 @app.route('/basic-form', methods=['GET', 'POST'])
 def basic_form():
