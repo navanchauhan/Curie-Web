@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <h2>About Curie Web</h2>
-    <p>The Page you are looking for cannot be found</p>
-    <p>Go Back <a href="{{ url_for('home') }}">home</a></p>
+    <h1>About Curie Web</h1>
+    <p>Curie Web is a web interface for my private Python Library called "Curie", with some aditional superpowers.</p>
+    <h4>Dock and Report</h4>
+    <p>This module uses AutoDock Vina to perform molecular docking on the specified molecular docking. It then uses PyMOL
+         to create high quality ray-traced visualisations. After finding and tabulating protein ligand interactions using PLIP,
+        it creates a PDF and emails you the report ( Along with supporting files )</p>
+    
 {% endblock %}
