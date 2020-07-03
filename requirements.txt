@@ -7,3 +7,6 @@ Jinja2==2.11.0
 MarkupSafe==1.1.1
 Werkzeug==0.16.1
 WTForms==2.2.1
+tabulate
+untangle
+mysql_connector
