@@ -2,7 +2,6 @@
 Flask Documentation:     http://flask.pocoo.org/docs/
 Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
-This file creates your application.
 """
 import os
 from app import app
@@ -72,11 +71,37 @@ def dock_upload():
         #photo = photoform.photo.data # we could also use request.files['photo']
         description = form.description.data
         target = form.target.data
+        ligand = form.ligand.data
+        cx,cy,cz = str(form.center_x.data), str(form.center_y.data), str(form.center_z.data)
+        sx,sy,sz = str(form.size_x.data), str(form.size_y.data), str(form.size_z.data)
+        email = form.email.data
+
+        import mysql.connector as con
+        mycon = con.connect(host="sql12.freesqldatabase.com",user="sql12352288",password="7X35JENbK3",port=3306,database="sql12352288")
+        mycursor = mycon.cursor()
+        mycursor.execute("SELECT COUNT(*) FROM curie")
+        jobID = mycursor.fetchall()[0][0]
+
+        i = int(jobID) + 1
+        t = str(i) + "_" + str(secure_filename(target.filename))
+        l = str(i) + "_" + str(secure_filename(ligand.filename))
+        c = "./app/static/uploads/configs/" + str(i) + ".txt"
+
+
+        buffer = "center_x="+cx+"\ncenter_y="+cy+"\ncenter_z="+cz+"\nsize_x="+sx+"\nsize_y="+sy+"\nsize_z="+sz
+        f = open(c,"w")
+        f.write(buffer)
+        f.close
+
         print(description)
-        print(secure_filename(target.filename))
+
         target.save(os.path.join(
-            app.config['UPLOAD_FOLDER'], secure_filename(target.filename)
+            #app.config['UPLOAD_FOLDER'], secure_filename(target.filename)
+            "./app/static/uploads/receptor",t #secure_filename(target.filename)
         ))
+        ligand.save(os.path.join("./app/static/uploads/ligands",l))
+        mycursor.execute("insert into curie values ({},'{}','{}','{}','{}',CURDATE(),'{}',0)".format(i,email,t,l,(str(i)+".txt"),description))
+        mycon.commit()
         #photo.save(os.path.join(
         #    app.config['UPLOAD_FOLDER'], filename
         #))
