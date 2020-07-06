@@ -7,10 +7,25 @@ import os
 from app import app
 from flask import render_template, request, flash
 from werkzeug.utils import secure_filename
+from random import choice, shuffle
+from string import digits, ascii_lowercase
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
 from .forms import MyForm, curieForm
+
+def gen_word(N, min_N_dig, min_N_low):
+    choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
+    choose_from.extend([digits + ascii_lowercase] * (N-min_N_low-min_N_dig))
+    chars = [choice(bet) for bet in choose_from]
+    shuffle(chars)
+    return ''.join(chars)
+
+def convertToBinaryData(filename):
+    # Convert digital data to binary format
+    with open(filename, 'rb') as file:
+        binaryData = file.read()
+    return binaryData
 
 
 ###
@@ -73,7 +88,6 @@ def dock_upload():
 
     if request.method == 'POST' and form.validate_on_submit():
 
-        #photo = photoform.photo.data # we could also use request.files['photo']
         description = form.description.data
         target = form.target.data
         ligand = form.ligand.data
@@ -82,36 +96,33 @@ def dock_upload():
         email = form.email.data
 
         import mysql.connector as con
-        mycon = con.connect(host="sql12.freesqldatabase.com",user="sql12352288",password="7X35JENbK3",port=3306,database="sql12352288")
+        mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
         mycursor = mycon.cursor()
-        mycursor.execute("SELECT COUNT(*) FROM curie")
-        jobID = mycursor.fetchall()[0][0]
 
-        i = int(jobID) + 1
-        t = str(i) + "_" + str(secure_filename(target.filename))
-        l = str(i) + "_" + str(secure_filename(ligand.filename))
-        c = "./app/static/uploads/configs/" + str(i) + ".txt"
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            os.chdir(directory)
+            target.save(secure_filename(target.filename))
+            ligand.save(secure_filename(ligand.filename))
+            buffer = "center_x="+cx+"\ncenter_y="+cy+"\ncenter_z="+cz+"\nsize_x="+sx+"\nsize_y="+sy+"\nsize_z="+sz
+            f = open("config.txt","w")
+            f.write(buffer)
+            f.close()
+            ligandB = convertToBinaryData(secure_filename(ligand.filename))
+            receptor = convertToBinaryData(secure_filename(target.filename))
+            config = convertToBinaryData("config.txt")
+            ligandName = secure_filename(ligand.filename)
+            receptorName = secure_filename(target.filename)
+            sqlQuery = "insert into curieweb (id, email, protein, protein_name, ligand_pdbqt, ligand_name,date, description, config) values (%s,%s,%s,%s,%s,%s,CURDATE(),%s,%s) "
+            jobID = gen_word(16, 1, 1)
+            print("Submitted JobID: ",jobID)
+            insert_tuple = (jobID,email,receptor,receptorName,ligandB,ligandName,description,config)
+            mycursor.execute(sqlQuery,insert_tuple)
+            mycon.commit()
 
+        print("Description",description)
 
-        buffer = "center_x="+cx+"\ncenter_y="+cy+"\ncenter_z="+cz+"\nsize_x="+sx+"\nsize_y="+sy+"\nsize_z="+sz
-        f = open(c,"w")
-        f.write(buffer)
-        f.close
-
-        print(description)
-
-        target.save(os.path.join(
-            #app.config['UPLOAD_FOLDER'], secure_filename(target.filename)
-            "./app/static/uploads/receptor",t #secure_filename(target.filename)
-        ))
-        ligand.save(os.path.join("./app/static/uploads/ligands",l))
-        mycursor.execute("insert into curie values ({},'{}','{}','{}','{}',CURDATE(),'{}',0)".format(i,email,t,l,(str(i)+".txt"),description))
-        mycon.commit()
-        #photo.save(os.path.join(
-        #    app.config['UPLOAD_FOLDER'], filename
-        #))
-
-        return render_template('display_photo.html', filename="OwO", description=description)
+        return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 
     flash_errors(form)
     return render_template('dock_upload.html', form=form)
