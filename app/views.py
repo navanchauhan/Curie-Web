@@ -27,6 +27,11 @@ def about():
     """Render about page."""
     return render_template('about.html')
 
+@app.route('/Visualise')
+def visualise():
+    """Render visualisation page."""
+    return render_template('visualise.html')    
+
 
 @app.route('/basic-form', methods=['GET', 'POST'])
 def basic_form():
