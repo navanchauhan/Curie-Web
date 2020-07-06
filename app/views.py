@@ -87,7 +87,7 @@ def dock_upload():
     form = curieForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-
+        print("Recieved task: ",form.description.data)
         description = form.description.data
         target = form.target.data
         ligand = form.ligand.data
