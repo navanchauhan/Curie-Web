@@ -1,3 +1,0 @@
-[submodule "app/src"]
-	path = app/src
-	url = https://github.com/navanchauhan/curie-cli
