@@ -9,7 +9,7 @@ mycursor.execute(sql_select_Query)
 
 records = mycursor.fetchall()
 
-def email(zi):
+def email(compressedFile):
     import smtplib 
     from email.mime.multipart import MIMEMultipart 
     from email.mime.text import MIMEText 
@@ -27,7 +27,7 @@ def email(zi):
     
     msg.attach(MIMEText(body, 'plain')) 
     filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip"
-    attachment = open((str(zi) + ".zip"), "rb") 
+    attachment = open((str(compressedFile) + ".zip"), "rb") 
     p = MIMEBase('application', 'octet-stream') 
     p.set_payload((attachment).read()) 
     encoders.encode_base64(p) 
