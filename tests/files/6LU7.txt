@@ -1,0 +1,7 @@
+receptor=./targets/6LU7.pdbqt 
+center_x=-9.7 
+center_y=11.4 
+center_z=68.9 
+size_x=19.3 
+size_y=29.9
+size_z=21.3

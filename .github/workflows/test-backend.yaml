@@ -20,8 +20,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install mysql-connector mysql
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Fetch Latest Curie-CLI
       run: docker pull navanchauhan/curie-cli:latest
-    - name: Run Database-Filler script
-      run: cd app && python backend_test.py
+    - name: Run Backend Test
+      run: cd tests && python backednTest.py
