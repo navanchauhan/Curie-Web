@@ -16,11 +16,6 @@ try:
 except con.ProgrammingError:
     print("Table Already Exists!")
 
-#try:
-#    mycursor.execute("insert into curieweb values (1,'navanchauhan@gmail.com','lu.pdbqt','test.pdbqt','owo.txt',CURDATE(),'CURIE WEB TASK',0)")
-#except con.IntegrityError:
-#    print("Duplicate Entry For Primary Key!")
-
 from random import choice, shuffle
 from string import digits, ascii_lowercase
 
@@ -35,8 +30,6 @@ def convertToBinaryData(filename):
     with open(filename, 'rb') as file:
         binaryData = file.read()
     return binaryData
-
-from os.path import basename
 
 ligand = convertToBinaryData("./files/Eucalyptol.pdbqt")
 receptor = convertToBinaryData("./files/6LU7.pdbqt")

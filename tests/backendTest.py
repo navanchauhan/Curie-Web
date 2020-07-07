@@ -65,9 +65,6 @@ if r[9] != None:
 import os
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
-#t = os.path.join(f,"receptor",target)
-#r = os.path.join(f,"ligands",ligand)
-#c = os.path.join(f,"configs",config)
 
 if ".pdbqt" not in receptor_name:
     receptor_name+=".pdbqt"
@@ -77,15 +74,11 @@ if ".pdbqt" not in ligand_name:
 
 print(f)
 import tempfile
-from shutil import copy
 from shutil import make_archive
 
 with tempfile.TemporaryDirectory() as directory:
     print('The created temporary directory is %s' % directory)
     os.chdir(directory)
-#    copy(t,os.getcwd())
-#    copy(r,os.getcwd())
-#    copy(c, os.getcwd())
     file = open(receptor_name,"wb")
     file.write(targetB)
     file.close()
@@ -96,12 +89,9 @@ with tempfile.TemporaryDirectory() as directory:
     file.write(configB)
     file.close()
     os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s  -c config.txt -dpi" % (receptor_name,ligand_name))
-    #copy("report.pdf",f)
     z = "Curie_Web_Result_"+str(jobID)
     zi = os.path.join(f,z)
     make_archive(zi, 'zip', directory)
-    #copy(("Curie_Web_Result_"+str(jobID)),f)
     email(zi)
-    #print((str(zi) + ".zip"))
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
     mycon.commit()    
