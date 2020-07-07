@@ -68,6 +68,13 @@ f = os.path.join(cd,"static/uploads")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
+
+if ".pdbqt" not in receptor_name:
+    receptor_name+=".pdbqt"
+
+if ".pdbqt" not in ligand_name:
+    ligand_name+=".pdbqt"
+
 print(f)
 import tempfile
 from shutil import copy
