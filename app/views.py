@@ -62,18 +62,17 @@ def status():
             records = mycursor.fetchall()
             if records == []:
                 return render_template('job_status_error.html',job=jobID)
-            else:
-                r = records[0]
-                protein_name = r[1]
-                ligand_name = r[2]
-                date = r[3]
-                description = r[4]
-                done = r[5]
-                if done==1:
-                    done="Completed"
-                elif done==0:
-                    done="Queued"
-                return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done)
+            r = records[0]
+            protein_name = r[1]
+            ligand_name = r[2]
+            date = r[3]
+            description = r[4]
+            done = r[5]
+            if done==1:
+                done="Completed"
+            elif done==0:
+                done="Queued"
+            return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done)
         flash_errors(taskStatusForm)
     return render_template('job_status_form.html',form=taskStatusForm)
         
