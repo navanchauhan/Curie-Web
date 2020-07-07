@@ -52,14 +52,14 @@ r = records[0]
 jobID = r[0]
 toEmail = r[1]
 targetB = r[2]
-if r[3] != None:
+if r[3] is not None:
     receptor_name = str(r[3])
-if r[6] != None:
+if r[6] is not None:
     ligand_name = str(r[6])
 ligandB = r[4]
 configB = r[7]
 date = r[8]
-if r[9] != None:
+if r[9] is not None:
     description = r[9]
 
 import os
