@@ -28,7 +28,7 @@ def email(compressedFile):
     msg.attach(MIMEText(body, 'plain')) 
     filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip"
     p = MIMEBase('application', 'octet-stream') 
-    with open((str(zi) + ".zip"), "rb") as attachment:
+    with open((str(compressedFile) + ".zip"), "rb") as attachment:
         p.set_payload((attachment).read()) 
     encoders.encode_base64(p) 
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
