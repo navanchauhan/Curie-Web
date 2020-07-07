@@ -4,7 +4,7 @@ debug = False
 host = "navanspi.duckdns.org"
 done = 1
 
-if debug != False:
+if debug is True:
     host = "192.168.1.6"
     done = 0
 
