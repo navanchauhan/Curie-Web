@@ -69,7 +69,6 @@ f = os.path.join(cd,"static/uploads")
 #c = os.path.join(f,"configs",config)
 print(f)
 import tempfile
-from shutil import copy
 from shutil import make_archive
 
 with tempfile.TemporaryDirectory() as directory:

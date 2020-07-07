@@ -36,8 +36,6 @@ def convertToBinaryData(filename):
         binaryData = file.read()
     return binaryData
 
-from os.path import basename
-
 ligand = convertToBinaryData("./static/uploads/ligands/test.pdbqt")
 receptor = convertToBinaryData("static/uploads/receptor/lu.pdbqt")
 config = convertToBinaryData("static/uploads/configs/owo.txt")
