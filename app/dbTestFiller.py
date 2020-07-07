@@ -59,6 +59,10 @@ except con.IntegrityError:
     insert_tuple = (jobID,"navanchauhan@gmail.com",receptor,receptorName,ligand,ligandName,config,done)
     mycursor.execute(sqlQuery,insert_tuple)
 
+print("Removing Test Query")
+
+q = 'delete from curieweb where id="%s"' % (jobID)
+mycursor.execute(q)
 
 mycon.commit()
 
