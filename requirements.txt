@@ -10,3 +10,4 @@ WTForms==2.2.1
 tabulate
 untangle
 mysql_connector
+mysql
