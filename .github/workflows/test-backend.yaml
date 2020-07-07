@@ -23,4 +23,4 @@ jobs:
     - name: Fetch Latest Curie-CLI
       run: docker pull navanchauhan/curie-cli:latest
     - name: Run Backend Test
-      run: cd tests && python backednTest.py
+      run: cd tests && python backendTest.py
