@@ -3,7 +3,7 @@ import mysql.connector as con
 mycon = con.connect(host="navanspi.duckdns.org",user="curieweb",password="curie-web-russian-54",port=3306,database="curie")
 mycursor = mycon.cursor()
 
-sql_select_Query = "select * from curieweb where id=2idcjxfsxla03oux LIMIT 1"
+sql_select_Query = 'select * from curieweb where id="2idcjxfsxla03oux" LIMIT 1'
 mycursor.execute(sql_select_Query)
 
 records = mycursor.fetchall()
