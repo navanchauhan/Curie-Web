@@ -8,7 +8,7 @@ mycursor.execute(sql_select_Query)
 
 records = mycursor.fetchall()
 
-def email(zi):
+def email(zipArchive):
     import smtplib 
     from email.mime.multipart import MIMEMultipart 
     from email.mime.text import MIMEText 
@@ -25,10 +25,10 @@ def email(zi):
     body = "Attached Zip contains the docked files, PLIP report and PyMOL Visualisations. If the ZIP file does not contain these files, please report this issue by replying to this email. Job was submitted on {} with the description {}".format(date, description)
     
     msg.attach(MIMEText(body, 'plain')) 
-    filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip"
-    attachment = open((str(zi) + ".zip"), "rb") 
+    filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip" 
     p = MIMEBase('application', 'octet-stream') 
-    p.set_payload((attachment).read()) 
+    with open((str(zipArchive) + ".zip"), "rb") as attachment:
+        p.set_payload((attachment).read()) 
     encoders.encode_base64(p) 
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 

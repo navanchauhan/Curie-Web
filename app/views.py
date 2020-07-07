@@ -105,9 +105,8 @@ def dock_upload():
             target.save(secure_filename(target.filename))
             ligand.save(secure_filename(ligand.filename))
             buffer = "center_x="+cx+"\ncenter_y="+cy+"\ncenter_z="+cz+"\nsize_x="+sx+"\nsize_y="+sy+"\nsize_z="+sz
-            f = open("config.txt","w")
-            f.write(buffer)
-            f.close()
+            with open("config.txt","w") as f:
+                f.write(buffer)
             ligandB = convertToBinaryData(secure_filename(ligand.filename))
             receptor = convertToBinaryData(secure_filename(target.filename))
             config = convertToBinaryData("config.txt")

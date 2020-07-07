@@ -27,9 +27,9 @@ def email(compressedFile):
     
     msg.attach(MIMEText(body, 'plain')) 
     filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip"
-    attachment = open((str(compressedFile) + ".zip"), "rb") 
     p = MIMEBase('application', 'octet-stream') 
-    p.set_payload((attachment).read()) 
+    with open((str(zi) + ".zip"), "rb") as attachment:
+        p.set_payload((attachment).read()) 
     encoders.encode_base64(p) 
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 
@@ -79,15 +79,12 @@ from shutil import make_archive
 with tempfile.TemporaryDirectory() as directory:
     print('The created temporary directory is %s' % directory)
     os.chdir(directory)
-    file = open(receptor_name,"wb")
-    file.write(targetB)
-    file.close()
-    file = open(ligand_name,"wb")
-    file.write(ligandB)
-    file.close()
-    file = open("config.txt","wb")
-    file.write(configB)
-    file.close()
+    with open(receptor_name,"wb") as file:
+        file.write(targetB)
+    with open(ligand_name,"wb") as file:
+        file.write(ligandB)
+    with open("config.txt","wb") as file:
+        file.write(configB)
     os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s  -c config.txt -dpi" % (receptor_name,ligand_name))
     z = "Curie_Web_Result_"+str(jobID)
     zi = os.path.join(f,z)
