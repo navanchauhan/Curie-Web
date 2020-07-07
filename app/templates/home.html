@@ -2,8 +2,9 @@
 
 {% block main %}
     <h2>Curie Web Demo</h2>
-    <p>The dock and report demo performs molecular docking using AutoDock Vina and then finds protein-ligand interactions using PLIP</p>
+    <p>Dock and Report performs molecular docking using AutoDock Vina, generates visualisations using PyMOL and then finds protein-ligand interactions using PLIP. It then compiles all of this into a PDF report and emails it to you.</p>
     <ul>
         <li><a href="{{ url_for('dock_upload') }}">Dock and Report</a></li>
+        <li><a href="{{ url_for('status')}}">Job Status</a></li>
     </ul>
 {% endblock %}

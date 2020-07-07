@@ -12,7 +12,7 @@ from string import digits, ascii_lowercase
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
-from .forms import MyForm, curieForm
+from .forms import MyForm, curieForm, statusForm
 
 def gen_word(N, min_N_dig, min_N_low):
     choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
@@ -47,6 +47,36 @@ def visualise():
     """Render visualisation page."""
     return render_template('visualise.html')    
 
+@app.route('/Status',methods=['GET','POST'])
+def status():
+    taskStatusForm = statusForm()
+
+    if request.method == 'POST':
+        if taskStatusForm.validate_on_submit():
+            jobID = taskStatusForm.jobID.data
+            import mysql.connector as con
+            mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
+            mycursor = mycon.cursor()
+            sqlQuery = 'select id, protein_name, ligand_name, date, description, done from curieweb where id="%s"' % (jobID)
+            mycursor.execute(sqlQuery)
+            records = mycursor.fetchall()
+            if records == []:
+                return render_template('job_status_error.html',job=jobID)
+            else:
+                r = records[0]
+                protein_name = r[1]
+                ligand_name = r[2]
+                date = r[3]
+                description = r[4]
+                done = r[5]
+                if done==1:
+                    done="Completed"
+                elif done==0:
+                    done="Queued"
+                return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done)
+        flash_errors(taskStatusForm)
+    return render_template('job_status_form.html',form=taskStatusForm)
+        
 
 @app.route('/basic-form', methods=['GET', 'POST'])
 def basic_form():

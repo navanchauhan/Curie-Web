@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h2>Get Job Status</h2>
+    <form action="{{ url_for('status') }}" method="post" enctype="multipart/form-data">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.jobID.label }}
+            {{ form.jobID(class="form-control") }}
+        </div>
+
+        <button class="btn btn-primary">Get Status</button>
+    </form>
+{% endblock %}

@@ -30,3 +30,6 @@ class curieForm(FlaskForm):
     center_z = DecimalField('Center Z',default=0)
 
     email = StringField('Email', validators=[DataRequired(), Email()])
+
+class statusForm(FlaskForm):
+    jobID = StringField('Job ID',validators=[DataRequired()])
