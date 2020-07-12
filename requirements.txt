@@ -12,3 +12,4 @@ tabulate
 untangle
 mysql_connector
 mysql
+uvicorn
