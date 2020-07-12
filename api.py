@@ -17,7 +17,9 @@ def flask_main():
     return f"Hello, {escape(name)} from Flask!"
 """
 
-app = FastAPI()
+app = FastAPI(title="Curie-API",
+    description="API for accessing Curie-Web.",
+    version="0.1",)
 
 
 @app.get("/v1")
