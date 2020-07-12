@@ -3,7 +3,7 @@ from flask import Flask
 # Config Values
 # location where file uploads will be stored
 UPLOAD_FOLDER = './app/static/uploads'
-DB_HOST = '192.168.1.6' #'navanspi.duckdns.org'
+DB_HOST = 'navanspi.duckdns.org' #'navanspi.duckdns.org'
 DB_PORT = 3306
 DB_USER = 'curieweb'
 DB_PASSWORD = 'curie-web-russian-54'
