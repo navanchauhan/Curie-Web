@@ -13,6 +13,7 @@ DB_NAME = 'curie'
 SECRET_KEY = 'Sup3r$3cretkey'
 
 app = Flask(__name__)
+#app = Flask(__name__, static_url_path='static')
 app.config.from_object(__name__)
 
 from app import views

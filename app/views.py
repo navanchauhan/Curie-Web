@@ -111,7 +111,7 @@ def wtform():
     return render_template('wtform.html', form=myform)
 
 
-@app.route('/dock', methods=['GET', 'POST'])
+@app.route('/Dock', methods=['GET', 'POST'])
 def dock_upload():
     form = curieForm()
 
