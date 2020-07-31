@@ -13,6 +13,6 @@ untangle
 mysql_connector
 mysql
 uvicorn
-tensorflow==2.2.0
+tensorflow-cpu==2.2.0
 bunch
 
