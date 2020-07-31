@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, DecimalField
+from wtforms import StringField, DecimalField, IntegerField
 from wtforms.validators import DataRequired, Email
 
 
@@ -33,3 +33,6 @@ class curieForm(FlaskForm):
 
 class statusForm(FlaskForm):
     jobID = StringField('Job ID',validators=[DataRequired()])
+
+class generateSMILES(FlaskForm):
+    n = IntegerField('Number of Molecules to Generate',default=1,validators=[DataRequired()])

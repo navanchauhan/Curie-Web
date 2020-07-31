@@ -20,11 +20,11 @@
   "finetune_epochs": 12,
   "finetune_batch_size": 1,
   "finetune_data_filename": "./datasets/protease_inhibitors_for_fine-tune.txt",
-  "config_file": "experiments/base_experiment/LSTM_Chem/config.json",
+  "config_file": "app/prod/config.json",
   "exp_dir": "experiments/2020-07-13/LSTM_Chem",
-  "tensorboard_log_dir": "experiments/2020-07-13/LSTM_Chem/logs/",
-  "checkpoint_dir": "experiments/2020-07-13/LSTM_Chem/checkpoints/",
+  "tensorboard_log_dir": "app/prod/logs/",
+  "checkpoint_dir": "app/prod/checkpoints/",
   "train_smi_max_len": 128,
-  "model_arch_filename": "experiments/2020-07-13/LSTM_Chem/model_arch.json",
-  "model_weight_filename": "experiments/2020-07-13/LSTM_Chem/checkpoints/LSTM_Chem-42-0.23.hdf5"
+  "model_arch_filename": "app/prod/model_arch.json",
+  "model_weight_filename": "app/prod/checkpoints/LSTM_Chem-42-0.23.hdf5"
 }

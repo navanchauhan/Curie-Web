@@ -12,7 +12,7 @@ from string import digits, ascii_lowercase
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
-from .forms import MyForm, curieForm, statusForm
+from .forms import MyForm, curieForm, statusForm, generateSMILES
 
 def gen_word(N, min_N_dig, min_N_low):
     choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
@@ -110,6 +110,34 @@ def wtform():
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
 
+try:
+    from lstm_chem.utils.config import process_config
+    from lstm_chem.model import LSTMChem
+    from lstm_chem.generator import LSTMChemGenerator
+    config = process_config("app/prod/config.json")
+    modeler = LSTMChem(config, session="generate")
+    gen = LSTMChemGenerator(modeler)
+    print("Testing Model")
+    gen.sample(1)
+except:
+    print("ok")
+
+
+@app.route('/Generate', methods=['GET','POST'])
+def generate():
+    """Generate novel drugs"""
+    form = generateSMILES()
+
+    with open("./app/prod/config.json") as config:
+        import json
+        j = json.loads(config.read())
+        print(j["exp_name"])
+
+    if request.method == 'POST' and form.validate_on_submit():
+        result = gen.sample(form.n.data)
+        return render_template('generate.html',expName=j["exp_name"],epochs=j["num_epochs"],optimizer=j["optimizer"].capitalize(), form=form,result=result)
+
+    return render_template('generate.html',expName=j["exp_name"],epochs=j["num_epochs"],optimizer=j["optimizer"].capitalize(), form=form)
 
 @app.route('/Dock', methods=['GET', 'POST'])
 def dock_upload():
