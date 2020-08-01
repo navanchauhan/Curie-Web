@@ -35,7 +35,11 @@ def email(zipArchive):
     
     s = smtplib.SMTP('smtp.gmail.com', 587) 
     s.starttls() 
-    s.login(fromaddr, 'thqw spyz ewqn rahy') 
+<<<<<<< HEAD
+    s.login(fromaddr, 'okrs shoc ahtk idui') 
+=======
+    s.login(fromaddr, 'okrs shoc ahtk idui') 
+>>>>>>> d68da3f38ac2b3740a2604dbf15e39fe9e307329
     
     text = msg.as_string() 
     
