@@ -11,7 +11,7 @@
           "batch_input_shape": [
             null,
             null,
-            52
+            47
           ],
           "dtype": "float32",
           "return_sequences": true,
@@ -64,7 +64,7 @@
           "batch_input_shape": [
             null,
             null,
-            52
+            47
           ],
           "dtype": "float32",
           "return_sequences": true,
@@ -115,7 +115,7 @@
           "name": "dense",
           "trainable": true,
           "dtype": "float32",
-          "units": 52,
+          "units": 47,
           "activation": "softmax",
           "use_bias": true,
           "kernel_initializer": {
@@ -141,7 +141,7 @@
     "build_input_shape": [
       null,
       null,
-      52
+      47
     ]
   },
   "keras_version": "2.3.0-tf",

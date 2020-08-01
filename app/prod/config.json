@@ -3,10 +3,10 @@
   "data_filename": "./datasets/all_smiles_clean.txt",
   "data_length": 0,
   "units": 256,
-  "num_epochs": 42,
+  "num_epochs": 22,
   "optimizer": "adam",
   "seed": 71,
-  "batch_size": 512,
+  "batch_size": 256,
   "validation_split": 0.1,
   "verbose_training": true,
   "checkpoint_monitor": "val_loss",
@@ -21,10 +21,10 @@
   "finetune_batch_size": 1,
   "finetune_data_filename": "./datasets/protease_inhibitors_for_fine-tune.txt",
   "config_file": "app/prod/config.json",
-  "exp_dir": "experiments/2020-07-13/LSTM_Chem",
-  "tensorboard_log_dir": "app/prod/logs/",
-  "checkpoint_dir": "app/prod/checkpoints/",
+  "exp_dir": "experiments/alpha/LSTM_Chem",
+  "tensorboard_log_dir": "experiments/alpha/LSTM_Chem/logs/",
+  "checkpoint_dir": "experiments/alpha/LSTM_Chem/checkpoints/",
   "train_smi_max_len": 128,
   "model_arch_filename": "app/prod/model_arch.json",
-  "model_weight_filename": "app/prod/checkpoints/LSTM_Chem-42-0.23.hdf5"
+  "model_weight_filename": "app/prod/checkpoints/LSTM_Chem-22-0.24.hdf5"
 }

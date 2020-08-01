@@ -110,6 +110,7 @@ def wtform():
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
 
+
 try:
     from lstm_chem.utils.config import process_config
     from lstm_chem.model import LSTMChem
@@ -120,8 +121,7 @@ try:
     print("Testing Model")
     gen.sample(1)
 except:
-    print("ok")
-
+    print("Could not load tensorflow model :/")
 
 @app.route('/Generate', methods=['GET','POST'])
 def generate():
@@ -131,7 +131,8 @@ def generate():
     with open("./app/prod/config.json") as config:
         import json
         j = json.loads(config.read())
-        print(j["exp_name"])
+        print("Model Name:", j["exp_name"])
+    
 
     if request.method == 'POST' and form.validate_on_submit():
         result = gen.sample(form.n.data)
