@@ -110,6 +110,7 @@ def wtform():
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
 
+tfWorking = -1
 
 try:
     from lstm_chem.utils.config import process_config
@@ -120,8 +121,11 @@ try:
     gen = LSTMChemGenerator(modeler)
     print("Testing Model")
     gen.sample(1)
+    tfWorking = 1
 except:
     print("Could not load tensorflow model :/")
+    tfWorking = 0
+
 
 @app.route('/Generate', methods=['GET','POST'])
 def generate():

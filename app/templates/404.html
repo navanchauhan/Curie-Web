@@ -4,4 +4,13 @@
     <h2>Oh Snap! Error 404</h2>
     <p>The Page you are looking for cannot be found</p>
     <p>Go Back <a href="{{ url_for('home') }}">home</a></p>
+    <section>
+        <style>
+            #puzzle{
+                height: 40vh;
+            }
+        </style>
+        <div id="puzzle"></div>
+        <script src="{{url_for('static',filename='js/missing_puzzle.js')}}"></script>
+    </section>
 {% endblock %}

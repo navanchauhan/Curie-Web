@@ -7,4 +7,14 @@
     <b>Ligand Name: </b>{{ln}}<br>
     <b>Description: </b>{{desc}}<br>
     <b>Status: </b>{{status}}
+
+    <section>
+        <style>
+            #growth{
+                height: 40vh;
+            }
+        </style>
+        <div id="growth"></div>
+        <script src="{{url_for('static',filename='js/growth.js')}}"></script>
+    </section>
 {% endblock %}
