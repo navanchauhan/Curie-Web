@@ -15,4 +15,4 @@ mysql
 uvicorn
 tensorflow-cpu==2.2.0
 bunch
-
+tqdm
