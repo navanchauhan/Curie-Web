@@ -7,6 +7,10 @@ sql_select_Query = "select * from curieweb where done=0 LIMIT 1"
 mycursor.execute(sql_select_Query)
 
 records = mycursor.fetchall()
+if records == []:
+    print("Empty Set 😳")
+    print("No active task, exitting gracefully")
+    exit(0)
 
 def email(zipArchive):
     import smtplib 
