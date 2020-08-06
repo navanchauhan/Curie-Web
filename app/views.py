@@ -112,12 +112,13 @@ def wtform():
 
 tfWorking = -1
 
-try:
-    import tensorflow as tf
-    tfWorking = 1
-except:
-    print("Could not load tensorflow model :/")
-    tfWorking = 0
+if tfWorking == -1:
+    try:
+        import tensorflow as tf
+        tfWorking = 1
+    except:
+        print("Could not load tensorflow model :/")
+        tfWorking = 0
 
 if tfWorking == 1:
     from lstm_chem.utils.config import process_config
@@ -141,11 +142,11 @@ def generate():
     
 
     if request.method == 'POST' and form.validate_on_submit():
-        result = gen.sample(form.n.data)
         print(tfWorking)
         if tfWorking == 0:
             flash("Failed to initialise the model!","danger")
         else:
+            result = gen.sample(form.n.data)
             return render_template('generate.html',expName=j["exp_name"],epochs=j["num_epochs"],optimizer=j["optimizer"].capitalize(), form=form,result=result)
 
     return render_template('generate.html',expName=j["exp_name"],epochs=j["num_epochs"],optimizer=j["optimizer"].capitalize(), form=form)
