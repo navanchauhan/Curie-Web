@@ -10,6 +10,10 @@
                 {{ form.n.label }}
                 {{ form.n(class="form-control")}}
         </div>
+        <!--<div class="form-row">
+            {\{ form.modelSelection.label }}
+            {\{ form.modelSelection(class="form-control")}}
+        </div>-->
         <br>
         <div class="form-row">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -17,8 +21,23 @@
     </form>
 
     {% if result %}
-        </b>what the frick</b>
-        <i>{{result}}</i>
+        </b>Generated Compounds</b>
+        <script src="https://unpkg.com/smiles-drawer@1.0.10/dist/smiles-drawer.min.js"></script>
+        <script>
+            let options = {};
+            let smilesDrawer = new SmilesDrawer.Drawer(options);
+        </script>
+        {% for x in range(result|length) %}
+        <!--<i>{\{result}}</i>-->
+        <p>{{result[x]}}</p>
+        <canvas id="canvas-{{x}}" width="500" height="500"></canvas>
+        <script>
+            SmilesDrawer.parse('{{result[0]}}', function(tree) {
+                smilesDrawer.draw(tree, "canvas-{{x}}", "dark", false);
+                console.log(smilesDrawer.draw(tree, "canvas-{{x}}", "light", false))
+              });
+          </script>
+        {% endfor %}
     {% endif %}
 
 {% endblock %}

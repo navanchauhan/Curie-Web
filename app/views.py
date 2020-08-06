@@ -142,6 +142,7 @@ def generate():
 
     if request.method == 'POST' and form.validate_on_submit():
         result = gen.sample(form.n.data)
+        print(tfWorking)
         if tfWorking == 0:
             flash("Failed to initialise the model!","danger")
         else:

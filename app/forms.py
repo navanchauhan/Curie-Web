@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileRequired, FileAllowed
-from wtforms import StringField, DecimalField, IntegerField
+from wtforms import StringField, DecimalField, IntegerField, SelectField
 from wtforms.validators import DataRequired, Email
 
 
@@ -36,3 +36,4 @@ class statusForm(FlaskForm):
 
 class generateSMILES(FlaskForm):
     n = IntegerField('Number of Molecules to Generate',default=1,validators=[DataRequired()])
+    #modelSelection = SelectField('Model',choices=[("alpha","Alpha"),("beta","Beta")])
