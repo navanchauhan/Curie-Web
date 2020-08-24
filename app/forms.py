@@ -37,3 +37,6 @@ class statusForm(FlaskForm):
 class generateSMILES(FlaskForm):
     n = IntegerField('Number of Molecules to Generate',default=1,validators=[DataRequired()])
     #modelSelection = SelectField('Model',choices=[("alpha","Alpha"),("beta","Beta")])
+
+class PyMedSearch(FlaskForm):
+    query = StringField('Search Query for PubMed',default="Covid-19",validators=[DataRequired()])

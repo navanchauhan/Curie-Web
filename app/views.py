@@ -9,10 +9,13 @@ from flask import render_template, request, flash
 from werkzeug.utils import secure_filename
 from random import choice, shuffle
 from string import digits, ascii_lowercase
+from pymed import PubMed
+from datetime import datetime
+import json
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
-from .forms import MyForm, curieForm, statusForm, generateSMILES
+from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch
 
 def gen_word(N, min_N_dig, min_N_low):
     choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
@@ -46,6 +49,26 @@ def about():
 def visualise():
     """Render visualisation page."""
     return render_template('visualise.html')    
+
+@app.route('/Search',methods=['GET','POST'])
+def pubmed():
+    """Query PubMed"""
+    form = PyMedSearch()
+    pubmed = PubMed(tool="Curie", email="navanchauhan@gmail.com")
+
+    if request.method == 'POST' and form.validate_on_submit():
+        q = form.query.data
+        print(form)
+        print(pubmed)
+        results = pubmed.query(q,max_results=100) 
+        search = []
+        for x in results:
+            search.append(x.toDict())
+
+        return render_template('search.html',result=search,form=form)
+    
+    flash_errors(form)
+    return render_template('search.html',form=form)
 
 @app.route('/Status',methods=['GET','POST'])
 def status():
@@ -110,7 +133,7 @@ def wtform():
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
 
-tfWorking = -1
+tfWorking = 0
 
 if tfWorking == -1:
     try:

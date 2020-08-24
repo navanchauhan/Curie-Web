@@ -16,3 +16,12 @@ uvicorn
 tensorflow-cpu==2.2.0
 bunch
 tqdm
+prettytable
+gradio 
+git+https://github.com/bp-kelley/descriptastorus 
+pandas_flavor 
+subword_nmt 
+wget 
+lifelines 
+scikit-plot
+pymed

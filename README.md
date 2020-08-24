@@ -5,6 +5,9 @@
 [![DeepSource](https://static.deepsource.io/deepsource-badge-dark-mini.svg)](https://deepsource.io/gh/navanchauhan/Curie-Web/?ref=repository-badge) 
 
 
+**Do Not Forget To Change DB Host configuration!**
+
+
 
 ```
 export PATH=$PATH:/home/pi/Desktop/Curie-Web/app/src/scripts

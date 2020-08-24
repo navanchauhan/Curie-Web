@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h1>Curie Search</h1>
+    <p>Search PubMed articles.</p>
+    <form action="{{ url_for('pubmed') }}" method="post" enctype="multipart/form-data">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-row">
+                {{ form.query.label }}
+                {{ form.query(class="form-control")}}
+        </div>
+        <!--<div class="form-row">
+            {\{ form.modelSelection.label }}
+            {\{ form.modelSelection(class="form-control")}}
+        </div>-->
+        <br>
+        <div class="form-row">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    {% if result %}
+        <h3>Search Results</h3>
+        {% for x in range(result|length) %}
+        <!--<i>{\{result}}</i>-->
+        <!--<p>{{result[x]}}</p>-->
+        <div class="card mb-3">
+            <div class="row no-gutters">
+                <div class="col-md-4 text-white bg-dark">
+                    <div class="card-body">
+                    <p class="card-text"><b>DOI: </b><a href="https://doi.org/{{result[x]['doi']}}">{{result[x]['doi']}}</a></p>
+                    <p class="card-text"><b>PubMed ID: </b><a href="https://pubmed.ncbi.nlm.nih.gov/{{result[x]['pubmed_id']}}">{{result[x]['pubmed_id']}}</a></p>
+                    <p class="card-text"><b>Download: </b><a href="https://sci-hub.tw/{{result[x]['doi']}}">Sci-Hub</a></p>
+                    <p class="card-text"><b>Journal: </b>{{result[x]['journal']}}</p>
+                </div>
+            </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{result[x]["title"]}}</h5>
+                  <p class="card-text"><b>Abstract: </b>{{result[x]["abstract"]}}</p>
+                  <p class="card-text"><small class="text-muted">Published on {{result[x]['publication_date']}}</small></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
