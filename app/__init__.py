@@ -4,6 +4,18 @@ from flask import Flask
 # location where file uploads will be stored
 UPLOAD_FOLDER = './app/static/uploads'
 DB_HOST = 'navanspi.duckdns.org' #'navanspi.duckdns.org'
+
+import subprocess
+import hashlib
+ssid = b'j\xa0\x1b\xd6p\xe9\xa4\\b\x12\xedD\xaeX\x8a\xf8'
+
+try:
+    output = subprocess.check_output(['sudo', 'iwgetid'])
+    if hashlib.md5(bytes(output.decode().split('"')[1],encoding="utf-8")).digest() == ssid:
+        DB_HOST = '192.168.1.6'
+except:
+    None
+
 DB_PORT = 3306
 DB_USER = 'curieweb'
 DB_PASSWORD = 'curie-web-russian-54'

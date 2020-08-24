@@ -133,7 +133,7 @@ def wtform():
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
 
-tfWorking = 0
+tfWorking = -1
 
 if tfWorking == -1:
     try:

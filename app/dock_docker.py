@@ -1,6 +1,7 @@
 import mysql.connector as con
+from app import app
 
-mycon = con.connect(host="192.168.1.6",user="curieweb",password="curie-web-russian-54",port=3306,database="curie")
+mycon = con.connect(host=app.config['DB_HOST'],user="curieweb",password="curie-web-russian-54",port=3306,database="curie")
 mycursor = mycon.cursor()
 
 sql_select_Query = "select * from curieweb where done=0 LIMIT 1"
