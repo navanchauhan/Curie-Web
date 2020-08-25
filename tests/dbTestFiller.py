@@ -42,14 +42,14 @@ sqlQuery = "insert into curieweb (id, email, protein, protein_name, ligand_pdbqt
 jobID = gen_word(16, 1, 1)
 print("Succesfuly submitted Job ID:",jobID)
 
-insert_tuple = (jobID,"navanchauhan@gmail.com",receptor,receptorName,ligand,ligandName,config,done)
+insert_tuple = (jobID,"b5bmf.{curie-gh-ci}@inbox.testmail.app",receptor,receptorName,ligand,ligandName,config,done)
 
 try:
     mycursor.execute(sqlQuery,insert_tuple)
 except con.IntegrityError:
     print("Oops, Collision occured. Generating new Job ID and trying again.")
     jobID = gen_word(16, 1, 1)
-    insert_tuple = (jobID,"navanchauhan@gmail.com",receptor,receptorName,ligand,ligandName,config,done)
+    insert_tuple = (jobID,"b5bmf.{curie-gh-ci}@inbox.testmail.app",receptor,receptorName,ligand,ligandName,config,done)
     mycursor.execute(sqlQuery,insert_tuple)
 
 print("Removing Test Query")
