@@ -10,7 +10,7 @@ import hashlib
 ssid = b'j\xa0\x1b\xd6p\xe9\xa4\\b\x12\xedD\xaeX\x8a\xf8'
 
 try:
-    output = subprocess.check_output(['sudo', 'iwgetid'])
+    output = subprocess.check_output(['iwgetid'])
     if hashlib.md5(bytes(output.decode().split('"')[1],encoding="utf-8")).digest() == ssid:
         DB_HOST = '192.168.1.6'
 except:
