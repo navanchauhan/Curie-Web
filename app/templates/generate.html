@@ -34,7 +34,7 @@
         <script>
             SmilesDrawer.parse('{{result[0]}}', function(tree) {
                 smilesDrawer.draw(tree, "canvas-{{x}}", "dark", false);
-                console.log(smilesDrawer.draw(tree, "canvas-{{x}}", "light", false))
+                console.log(smilesDrawer.draw(tree, "canvas-{{x}}", "dark", false))
               });
           </script>
         {% endfor %}

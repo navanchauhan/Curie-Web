@@ -68,15 +68,16 @@
                   <div class="col-sm-6 col-md-3 item">
                       <h3>Features</h3>
                       <ul>
-                          <li><a href="#">Dock and Report</a></li>
-                          <li><a href="#">PubMed Search</a></li>
+                          <li><a href="{{ url_for('dock_upload') }}">Dock and Report (Manual)</a></li>
+                          <li><a href="{{ url_for('dock_upload_single') }}">Dock and Report (Automatic)</a></li>
+                          <li><a href="{{ url_for('pubmed') }}">PubMed Search</a></li>
                       </ul>
                   </div>
                   <div class="col-sm-6 col-md-3 item">
                       <h3>Beta Features</h3>
                       <ul>
-                          <li><a href="#">LSTM Generator</a></li>
-                          <li><a href="#">Visualiser</a></li>
+                          <li><a href="{{ url_for('generate') }}">LSTM Generator</a></li>
+                          <li><a href="{{ url_for('visualise') }}">Visualiser</a></li>
                       </ul>
                   </div>
                   <div class="col-md-6 item text">

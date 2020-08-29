@@ -34,6 +34,13 @@ class curieForm(FlaskForm):
 class statusForm(FlaskForm):
     jobID = StringField('Job ID',validators=[DataRequired()])
 
+class dockSingleForm(FlaskForm):
+    description = StringField('Description',default="Curie Web Task")
+    pdbID = StringField('PDB ID',validators=[DataRequired()])
+    smiles = StringField('SMILES',validators=[DataRequired()])
+    name = StringField('Ligand Name',validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+
 class generateSMILES(FlaskForm):
     n = IntegerField('Number of Molecules to Generate',default=1,validators=[DataRequired()])
     #modelSelection = SelectField('Model',choices=[("alpha","Alpha"),("beta","Beta")])

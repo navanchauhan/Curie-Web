@@ -12,10 +12,11 @@ from string import digits, ascii_lowercase
 from pymed import PubMed
 from datetime import datetime
 import json
+import subprocess
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
-from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch
+from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch, dockSingleForm
 
 def gen_word(N, min_N_dig, min_N_low):
     choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
@@ -29,7 +30,6 @@ def convertToBinaryData(filename):
     with open(filename, 'rb') as file:
         binaryData = file.read()
     return binaryData
-
 
 ###
 # Routing for your application.
@@ -99,7 +99,6 @@ def status():
         flash_errors(taskStatusForm)
     return render_template('job_status_form.html',form=taskStatusForm)
         
-
 @app.route('/basic-form', methods=['GET', 'POST'])
 def basic_form():
     if request.method == 'POST':
@@ -113,7 +112,6 @@ def basic_form():
                                email=email)
 
     return render_template('form.html')
-
 
 @app.route('/wtform', methods=['GET', 'POST'])
 def wtform():
@@ -133,7 +131,7 @@ def wtform():
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
 
-tfWorking = -1
+tfWorking = 0
 
 if tfWorking == -1:
     try:
@@ -217,6 +215,39 @@ def dock_upload():
 
     flash_errors(form)
     return render_template('dock_upload.html', form=form)
+
+@app.route('/Dock-Single', methods=['GET', 'POST'])
+def dock_upload_single():
+    form = dockSingleForm()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        print("Recieved task: ",form.description.data)
+        description = form.description.data
+        pdb = form.pdbID.data
+        smile = form.smiles.data
+        name = form.name.data
+        email = form.email.data
+
+        import mysql.connector as con
+        mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
+        mycursor = mycon.cursor()
+
+        sqlQuery = "insert into curieweb (id, email, pdb, ligand_smile, ligand_name, date, description) values (%s,%s,%s,%s,%s,CURDATE(),%s) "
+        jobID = gen_word(16, 1, 1)
+
+        insert_tuple = (jobID,email,pdb,smile,name,description)
+        mycursor.execute(sqlQuery,insert_tuple)
+        mycon.commit()
+        
+        print("Description",description)
+
+        cwd = os.path.join(os.getcwd(),"app")
+        subprocess.Popen(['python3', 'dock-single.py'],cwd=cwd)
+        
+        return render_template('display_result.html', filename="OwO", description=description,job=jobID)
+
+    flash_errors(form)
+    return render_template('dock_upload_single.html', form=form)
 
 ###
 # The functions below should be applicable to all Flask apps.

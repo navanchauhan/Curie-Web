@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h2>Enter Your Configuration</h2>
+    <form action="{{ url_for('dock_upload_single') }}" method="post" enctype="multipart/form-data">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.description.label }}
+            {{ form.description(class="form-control") }}
+        </div>
+        <div class="form-row">
+            <div class="col">
+            {{ form.pdbID.label }}
+            {{ form.pdbID(class="form-control")}}
+            </div>
+            <div class="col">
+                {{ form.smiles.label }}
+                {{ form.smiles(class="form-control")}}
+            </div>
+            <div class="col">
+                {{ form.name.label }}
+                {{ form.name(class="form-control")}}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="form-control") }}
+        </div>
+
+        <button class="btn btn-primary">Upload</button>
+    </form>
+    <br>
+    <section>
+        <style>
+            #discovery{
+                height: 40vh;
+            }
+        </style>
+        <div id="discovery"></div>
+        <script src="{{url_for('static',filename='js/discovery.js')}}"></script>
+    </section>
+{% endblock %}

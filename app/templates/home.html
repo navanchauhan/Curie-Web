@@ -2,12 +2,29 @@
 
 {% block main %}
     <h2>Curie Web Demo</h2>
-    <p>Dock and Report performs molecular docking using AutoDock Vina, generates visualisations using PyMOL and then finds protein-ligand interactions using PLIP. It then compiles all of this into a PDF report and emails it to you.</p>
+    <p>Curie-Web is a part of The Curie Project which aims to make the process of Computer-Aided Drug Design as fast as possible.</p>
+    <p>The following are the currently active modules</p>
+    <h3>Docking</h3>
     <ul>
-        <li><a href="{{ url_for('dock_upload') }}">Dock and Report</a></li>
-        <li><a href="{{ url_for('status')}}">Job Status</a></li>
-        <li><a href="{{ url_for('generate') }}">Generate</a></li>
+        <li><a href="{{ url_for('dock_upload') }}">Dock and Report (Manual)</a> - You can enter your AutoDock Vina configuration, upload the PDBQT files and it will perform the molecular docking and generate a PDF with proper visualisations and protein-interaction profillings (Using PLIP) </li>
+        <li><a href="{{ url_for('dock_upload_single') }}">Dock and Report (Automatic)</a> - You just enter in the PDB Code, target compound's SMILES structure and name, it will automatically find a binding location and then perform docking and report generation</li>
     </ul>
 
+    <h3>Drug Designing</h3>
+    <ul>
+        <li><a href="{{ url_for('generate') }}">Generate</a> - You can use this to generate completely new compounds</li>
+    </ul>
+
+    <h3>Researching</h3>
+    <ul>
+        <li><a href="{{ url_for('pubmed') }}">PubMed Search</a> - Handy PubMed search with direct download links</li>
+        <li>Qrious App - You can enter a question for a set of papers (e.g. ChemRxiv preprints) and it uses AI to answer it for each individual paper based on their abstract</li>
+    </ul>
+
+    <h3>Misc.</h3>
+    <ul>
+        <li><a href="{{ url_for('status')}}">Job Status</a> - Check the job status </li>
+        <li><a href="{{ url_for('visualise')}}">Visualise</a> - Molecular Viewer </li>
+    </ul>
     <img src="{{url_for('static',filename='assets/workingInALaboratory.svg')}}" />
 {% endblock %}
