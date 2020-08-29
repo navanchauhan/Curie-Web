@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<h2>Molecule Editor</h2>
+
+<p>Powered by <a href="https://github.com/partridgejiang/Kekule.js">Kekule.js</a>
+
+<br>
+
+
+<script src="https://cdn.jsdelivr.net/npm/kekule@0.9.3/dist/kekule.min.js?modules=chemWidget,algorithm&locals=en"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/kekule.css') }}" />
+
+  <!--
+  <script src="../../../src/kekule.js?modules=chemWidget,algorithm&min=false"></script>
+  <link rel="stylesheet" type="text/css" href="../../../src/widgets/themes/default/kekule.css" />
+  -->
+
+  <style>
+    #chemComposer
+    {
+      margin: 0;
+    }
+  </style>
+
+<div id="chemComposer" data-widget="Kekule.Editor.Composer" ></div>
+
+<script>
+    var chemEditor;
+    var chemComposer;
+    function init()
+    {
+      /*
+      var elem = document.getElementById('chemComposer');
+      var chemEditor = new Kekule.Editor.ChemSpaceEditor(document, null, Kekule.Render.RendererType.R2D);
+      chemComposer = new Kekule.Editor.Composer(elem, chemEditor);
+      */
+      chemComposer = Kekule.Widget.getWidgetById('chemComposer');
+      chemComposer
+        .setEnableDimensionTransform(true)
+        .setAutoSetMinDimension(true)
+        .setAutoResizeConstraints({width: 0.75, height: 0.7})
+        .autoResizeToClient();  // force a resize to window client
+    }
+    Kekule.X.domReady(init);
+  </script>
+
+<br>
+
+{% endblock %}
