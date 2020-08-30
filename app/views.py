@@ -85,7 +85,7 @@ def status():
             import mysql.connector as con
             mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
             mycursor = mycon.cursor()
-            sqlQuery = 'select id, protein_name, ligand_name, date, description, done from curieweb where id="%s"' % (jobID)
+            sqlQuery = 'select id, protein_name, ligand_name, date, description, done, pdb from curieweb where id="%s"' % (jobID)
             mycursor.execute(sqlQuery)
             records = mycursor.fetchall()
             if records == []:
@@ -100,7 +100,12 @@ def status():
                 done="Completed"
             elif done==0:
                 done="Queued"
-            return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done)
+            if protein_name == None:
+                protein_name = r[6]
+
+            PDFReport = "/static/uploads/reports/" + str(jobID) + ".pdf"
+
+            return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done,PDFReport=PDFReport)
         flash_errors(taskStatusForm)
     return render_template('job_status_form.html',form=taskStatusForm)
         

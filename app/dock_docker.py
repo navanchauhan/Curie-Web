@@ -67,12 +67,13 @@ if r[9] is not None:
 import os
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
+reportDirectory = os.path.join(f,"reports")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
 print(f)
 import tempfile
-from shutil import make_archive
+from shutil import make_archive, copyfile
 
 with tempfile.TemporaryDirectory() as directory:
     print('The created temporary directory is %s' % directory)
@@ -92,6 +93,7 @@ with tempfile.TemporaryDirectory() as directory:
     zi = os.path.join(f,z)
     make_archive(zi, 'zip', directory)
     #copy(("Curie_Web_Result_"+str(jobID)),f)
+    copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
     email(zi)
     #print((str(zi) + ".zip"))
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))

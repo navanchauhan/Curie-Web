@@ -202,11 +202,12 @@ date = records[6]
 import os
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
+reportDirectory = os.path.join(f,"reports")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
 import tempfile
-from shutil import make_archive
+from shutil import make_archive, copyfile
 import time
 
 with tempfile.TemporaryDirectory() as directory:
@@ -228,6 +229,7 @@ with tempfile.TemporaryDirectory() as directory:
 	z = "Curie_Web_Result_"+str(jobID)
 	zi = os.path.join(f,z)
 	make_archive(zi, 'zip', directory)
+	copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
 	#copy(("Curie_Web_Result_"+str(jobID)),f)
 	email(zi)
 	#print((str(zi) + ".zip"))

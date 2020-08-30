@@ -8,6 +8,25 @@
     <b>Description: </b>{{desc}}<br>
     <b>Status: </b>{{status}}
 
+{% if status == 'Completed' %}
+    
+    <style>
+        iframe {
+        width: 100%;
+        height: 550px;
+        border: none;
+        overflow: hidden;
+      }
+    </style>
+
+    <p>A detailed zip file containing this PDF, along with all supporting files (configuration, pictures, protein-ligands e.t.c) to your email.</p>
+    <h3>PDF Report</h3>
+    <section>
+        <iframe src={{PDFReport}} id="report"></iframe>
+    </section>
+
+{% endif %}
+
     <section>
         <style>
             #growth{
