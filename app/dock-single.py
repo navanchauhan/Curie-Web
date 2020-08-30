@@ -90,6 +90,16 @@ def bounding_box(receptor, residues):
     
     return {"size_x": SizeX, "size_y": SizeY, "size_z": SizeZ, "center_x": CenterX, "center_y": CenterY, "center_z": CenterZ}
 
+def get3DModel(protein,ligand):
+	import pymol2
+	session = pymol2.PyMOL()
+	session.start()
+	cmd = session.cmd
+	cmd.load(protein,"target")
+	cmd.load(ligand,"ligand")
+	cmd.save("model.gltf")
+	session.stop()
+
 def removeWater(pdbpath):
 	import pymol2
 	session = pymol2.PyMOL()
@@ -203,6 +213,7 @@ import os
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
 reportDirectory = os.path.join(f,"reports")
+modelDirectory = os.path.join(f,"3DModels")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
@@ -230,6 +241,10 @@ with tempfile.TemporaryDirectory() as directory:
 	zi = os.path.join(f,z)
 	make_archive(zi, 'zip', directory)
 	copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
+	get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
+	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
+	os.system("docker run -it --rm -v $(PWD):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
+	copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
 	#copy(("Curie_Web_Result_"+str(jobID)),f)
 	email(zi)
 	#print((str(zi) + ".zip"))
