@@ -97,7 +97,7 @@ def get3DModel(protein,ligand):
 	cmd = session.cmd
 	cmd.load(protein,"target")
 	cmd.load(ligand,"ligand")
-	cmd.save("model.gltf")
+	cmd.save("model.dae")
 	session.stop()
 
 def removeWater(pdbpath):
@@ -242,6 +242,7 @@ with tempfile.TemporaryDirectory() as directory:
 	make_archive(zi, 'zip', directory)
 	copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
 	get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
+	os.system("collada2gltf -i model.dae -o model.gltf")
 	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
 	os.system("docker run -it --rm -v $(PWD):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
 	copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
