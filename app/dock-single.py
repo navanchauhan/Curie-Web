@@ -245,7 +245,10 @@ with tempfile.TemporaryDirectory() as directory:
 	os.system("collada2gltf -i model.dae -o model.gltf")
 	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
 	os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
-	copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
+	try:
+		copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
+	except:
+		print("Could not generate USDZ file")
 	#copy(("Curie_Web_Result_"+str(jobID)),f)
 	email(zi)
 	#print((str(zi) + ".zip"))
