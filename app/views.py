@@ -222,7 +222,8 @@ def dock_upload():
             mycon.commit()
 
         print("Description",description)
-
+        cwd = os.path.join(os.getcwd(),"app")
+        subprocess.Popen(['python3', 'dock-docker.py'],cwd=cwd)
         return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 
     flash_errors(form)
