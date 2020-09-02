@@ -18,7 +18,7 @@ def flask_main():
 """
 
 app = FastAPI(title="Curie-API",
-    description="API for accessing Curie-Web.",
+    description="API for accessing most of the features.",
     version="0.1",)
 
 
