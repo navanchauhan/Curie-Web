@@ -244,7 +244,11 @@ with tempfile.TemporaryDirectory() as directory:
 	get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
 	os.system("collada2gltf -i model.dae -o model.gltf")
 	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
-	os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
+	arch = os.popen("uname -m").read()
+	if "x86" in arch:
+		os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
+	elif "aarch64" in arch:
+		os.system("docker run -it --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
 	try:
 		copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
 	except:

@@ -45,6 +45,20 @@ def email(zipArchive):
     s.sendmail(fromaddr, toaddr, text) 
     s.quit() 
 
+def get3DModel(protein,ligand):
+    try:
+	    import pymol2
+    except ImportError:
+        print("🤭 PyMOL 2 has not been installed correctly")
+        return None
+	session = pymol2.PyMOL()
+	session.start()
+	cmd = session.cmd
+	cmd.load(protein,"target")
+	cmd.load(ligand,"ligand")
+	cmd.save("model.dae")
+	session.stop()
+
 receptor_name = "protein.pdbqt"
 ligand_name = "ligand.pdbqt"
 description = "Curie Web Task"
@@ -68,6 +82,7 @@ import os
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
 reportDirectory = os.path.join(f,"reports")
+modelDirectory = os.path.join(f,"3DModels")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
@@ -94,6 +109,18 @@ with tempfile.TemporaryDirectory() as directory:
     make_archive(zi, 'zip', directory)
     #copy(("Curie_Web_Result_"+str(jobID)),f)
     copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
+    get3DModel(receptor_name,ligand_name.replace(".pdbqt","_out.pdbqt"))
+    os.system("collada2gltf -i model.dae -o model.gltf")
+    copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
+    arch = os.popen("uname -m").read()
+    if "x86" in arch:
+        os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
+    elif "aarch64" in arch:
+        os.system("docker run -it --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
+    try:
+        copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
+    except:
+        print("Could not generate USDZ file")
     email(zi)
     #print((str(zi) + ".zip"))
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
