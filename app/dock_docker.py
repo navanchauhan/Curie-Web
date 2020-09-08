@@ -28,7 +28,7 @@ def email(zipArchive):
     from email.mime.base import MIMEBase 
     from email import encoders 
     
-    fromaddr = "navanchauhan@gmail.com"
+    fromaddr = config['SMTP']['EMAIL']
     toaddr = toEmail
     
     msg = MIMEMultipart()  
@@ -46,9 +46,9 @@ def email(zipArchive):
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 
     
-    s = smtplib.SMTP('smtp.gmail.com', 587) 
+    s = smtplib.SMTP(config['SMTP']['SERVER'], config['SMTP']['PORT']) 
     s.starttls() 
-    s.login(fromaddr, 'okrs shoc ahtk idui') 
+    s.login(fromaddr, config['SMTP']['PASSWORD']) 
     text = msg.as_string() 
     
     s.sendmail(fromaddr, toaddr, text) 
