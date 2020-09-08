@@ -20,7 +20,7 @@ DB_PORT = 3306
 DB_USER = 'curieweb'
 DB_PASSWORD = 'curie-web-russian-54'
 DB_NAME = 'curie'
-"""
+
 
 import subprocess
 import hashlib
@@ -32,7 +32,7 @@ try:
         DB_HOST = '192.168.1.6'
 except:
     None
-
+"""
 
 # needed for session security, the flash() method in this case stores the message
 # in a session
