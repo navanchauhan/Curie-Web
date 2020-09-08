@@ -8,7 +8,16 @@ from collections import namedtuple
 
 import mysql.connector as con
 
-mycon = con.connect(host='192.168.1.6',user="curieweb",password="curie-web-russian-54",port=3306,database="curie")
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+try:
+    config['DATABASE']
+except KeyError:
+    config.read("../config.ini")
+
+mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
 mycursor = mycon.cursor()
 
 sql_select_Query = "SELECT id,email,pdb,ligand_smile,ligand_name,description,date FROM curieweb WHERE pdb IS NOT NULL AND done=0 LIMIT 1"

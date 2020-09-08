@@ -1,6 +1,15 @@
 import mysql.connector as con
 
-mycon = con.connect(host='192.168.1.6',user="curieweb",password="curie-web-russian-54",port=3306,database="curie")
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+try:
+    config['DATABASE']
+except KeyError:
+    config.read("../config.ini")
+
+mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
 mycursor = mycon.cursor()
 
 sql_select_Query = "select * from curieweb where done=0 LIMIT 1"
@@ -47,17 +56,17 @@ def email(zipArchive):
 
 def get3DModel(protein,ligand):
     try:
-	    import pymol2
+        import pymol2
     except ImportError:
         print("🤭 PyMOL 2 has not been installed correctly")
         return None
-	session = pymol2.PyMOL()
-	session.start()
-	cmd = session.cmd
-	cmd.load(protein,"target")
-	cmd.load(ligand,"ligand")
-	cmd.save("model.dae")
-	session.stop()
+    session = pymol2.PyMOL()
+    session.start()
+    cmd = session.cmd
+    cmd.load(protein,"target")
+    cmd.load(ligand,"ligand")
+    cmd.save("model.dae")
+    session.stop()
 
 receptor_name = "protein.pdbqt"
 ligand_name = "ligand.pdbqt"

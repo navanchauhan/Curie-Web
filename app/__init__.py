@@ -1,9 +1,26 @@
 from flask import Flask
 
-# Config Values
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+DB_HOST = config['DATABASE']['HOST']
+DB_PORT = config['DATABASE']['PORT']
+DB_USER = config['DATABASE']['USER']
+DB_PASSWORD = config['DATABASE']['PASSWORD']
+DB_NAME = config['DATABASE']['NAME']
+UPLOAD_FOLDER = config['FILES']['UPLOAD_FOLDER']
+
+"""
+# Hardcoded Values
 # location where file uploads will be stored
 UPLOAD_FOLDER = './app/static/uploads'
 DB_HOST = 'navanspi.duckdns.org' #'navanspi.duckdns.org'
+DB_PORT = 3306
+DB_USER = 'curieweb'
+DB_PASSWORD = 'curie-web-russian-54'
+DB_NAME = 'curie'
+"""
 
 import subprocess
 import hashlib
@@ -16,10 +33,7 @@ try:
 except:
     None
 
-DB_PORT = 3306
-DB_USER = 'curieweb'
-DB_PASSWORD = 'curie-web-russian-54'
-DB_NAME = 'curie'
+
 # needed for session security, the flash() method in this case stores the message
 # in a session
 SECRET_KEY = 'Sup3r$3cretkey'
