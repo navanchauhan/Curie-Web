@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+
+{% block main %}
+    <h2>Oh Snap! An error occured</h2>
+    <p>Error Code: {{code}}</p>
+    <p>Error Description: {{description}}</p>
+    <section>
+        <style>
+            #puzzle{
+                height: 40vh;
+            }
+        </style>
+        <div id="puzzle"></div>
+        <script src="{{url_for('static',filename='js/missing_puzzle.js')}}"></script>
+    </section>
+{% endblock %}
