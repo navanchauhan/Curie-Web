@@ -1,0 +1,42 @@
+
+{% extends 'base.html' %}
+
+{% block main %}
+    <h2>Generate PDBQTs</h2>
+
+    <script>
+        function makeVisible() {
+
+            var val = document.getElementById("jobType").value;
+
+            if (val === "protein") {
+            document.getElementById("pdb").disabled = false;
+            document.getElementById('smiles').disabled = true;
+            document.getElementById('name').disabled = true;
+            }
+            else if (val=='ligand') {
+                document.getElementById('smiles').disabled = false;
+                document.getElementById("pdb").disabled = true;
+                document.getElementById("name").disabled = false;
+            }
+}
+    </script>
+
+    <form method="post" action="{{ url_for('generate_pdbqts') }}">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-group">
+            {{ form.jobType.label }} {{ form.jobType(**{"onchange":"makeVisible()","class":"form-control"}) }}
+        </div>
+        <div class="form-group">
+            {{ form.pdb.label }} {{ form.pdb(**{"disabled":"false","class":"form-control"}) }}
+        </div>
+        <div class="form-group">
+            {{ form.smiles.label }} {{ form.smiles(**{"disabled":"true","class":"form-control"}) }}
+        </div>
+        <div class="form-group">
+            {{ form.name.label }} {{ form.name(**{"disabled":"true","class":"form-control"}) }}
+        </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}

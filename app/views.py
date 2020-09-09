@@ -5,7 +5,7 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 """
 import os
 from app import app
-from flask import render_template, request, flash
+from flask import render_template, request, flash, send_file
 from werkzeug.utils import secure_filename
 from random import choice, shuffle
 from string import digits, ascii_lowercase
@@ -16,7 +16,7 @@ import subprocess
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
-from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch, dockSingleForm
+from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch, dockSingleForm, generatePDBQTS
 
 def gen_word(N, min_N_dig, min_N_low):
     choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
@@ -142,6 +142,77 @@ def wtform():
 
         flash_errors(myform)
     return render_template('wtform.html', form=myform)
+
+@app.route('/PDBQTs',methods=['GET','POST'])
+def generate_pdbqts():
+    myform = generatePDBQTS()
+
+    if request.method == 'POST':
+        if myform.validate_on_submit():
+            pdbId = myform.pdb.data
+            smiles = myform.smiles.data
+            name = myform.name.data
+            if (len(pdbId)==0) and (len(smiles)==0):
+                print("Nothing Submitted!")
+                flash("Invalid Submission!",'danger')
+            if len(smiles) != 0:
+                import oddt
+                try:
+                    mol = oddt.toolkit.readstring('smi', smiles)
+                except:
+                    return render_template('error.html',code="OD01",description="Could not convert SMILES to molecule, please check the SMILES")
+                try:
+                    mol.make3D()
+                    mol.calccharges()
+                except:
+                    return render_template('error.html',code="OD02",description="Failed to add charges to molecule")
+                from oddt.docking.AutodockVina import write_vina_pdbqt
+                
+                try:
+                    write_vina_pdbqt(mol,'app',flexible=False)
+                except:
+                    return render_template('error.html',code="OD03",description="Failed to write the converted PDBQT file")
+                path = ".pdbqt"
+                if ".pdbqt" in name:
+                    fname = name
+                else:
+                    fname = name + ".pdbqt"
+                return send_file(path,attachment_filename=fname,as_attachment=True)
+            if len(pdbId) != 0:
+                from plip.basic import config
+                from plip.exchange.webservices import fetch_pdb
+                from plip.structure.preparation import create_folder_if_not_exists, extract_pdbid
+                from plip.structure.preparation import tilde_expansion, PDBComplex
+
+                try:
+                    pdbfile, pdbid = fetch_pdb(pdbId.lower())
+                except:
+                    return render_template('error.html',code="PL01",description="Failed to fetch the PDB, please check the PDB Code")
+                pdbpath = tilde_expansion('%s/%s.pdb' % (config.BASEPATH.rstrip('/'), pdbid))
+                create_folder_if_not_exists(config.BASEPATH)
+                with open(pdbpath, 'w') as g:
+                    g.write(pdbfile)
+                import oddt
+                from oddt.docking.AutodockVina import write_vina_pdbqt
+                try:
+                    receptor = next(oddt.toolkit.readfile("pdb",pdbpath.split("./")[1]))
+                    receptor.calccharges()
+                except Exception:
+                    receptor = next(oddt.toolkits.rdk.readfile("pdb",pdbpath.split("./")[1]))
+                    receptor.calccharges()
+
+                try:
+                    path = write_vina_pdbqt(receptor,'app',flexible=False)
+                except:
+                    return render_template('error.html',code="OD03",description="Failed to write the converted PDBQT file")
+                os.rename(path,"app/.pdbqt")
+                path = ".pdbqt"
+                fname = pdbId.upper() + ".pdqbt"
+                return send_file(path,attachment_filename=fname,as_attachment=True) 
+        flash_errors(myform)
+    return render_template('pdbqt_form.html',form=myform)
+            
+
 
 tfWorking = 0
 

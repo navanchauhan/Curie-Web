@@ -45,5 +45,11 @@ class generateSMILES(FlaskForm):
     n = IntegerField('Number of Molecules to Generate',default=1,validators=[DataRequired()])
     #modelSelection = SelectField('Model',choices=[("alpha","Alpha"),("beta","Beta")])
 
+class generatePDBQTS(FlaskForm):
+    jobType = SelectField(u'Generate for Protein or Ligand', choices=[("", "Protein or Ligand"),('protein', 'Protein (PDB)'), ('ligand', 'Ligand (SMILES)')], default='SelectOption')
+    pdb = StringField('PDB ID')
+    smiles = StringField('SMILES')
+    name = StringField('Compound Name (Optional)')
+
 class PyMedSearch(FlaskForm):
     query = StringField('Search Query for PubMed',default="Covid-19",validators=[DataRequired()])
