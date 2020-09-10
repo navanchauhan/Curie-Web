@@ -1,6 +1,15 @@
 import mysql.connector as con
 
-mycon = con.connect(host="navanspi.duckdns.org",user="curieweb",password="curie-web-russian-54",port=3306,database="curie")
+import configparser
+config = configparser.ConfigParser()
+config.read('config.ini')
+
+try:
+    config['DATABASE']
+except KeyError:
+    config.read("../config.ini")
+
+mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
 mycursor = mycon.cursor()
 
 # If we are running the CI on an actual server, try using the 6LU7 Mpro and Geraniin Job ID because Eucalyptol fails
@@ -16,7 +25,7 @@ def email(compressedFile):
     from email.mime.base import MIMEBase 
     from email import encoders 
     
-    fromaddr = "navanchauhan@gmail.com"
+    fromaddr = config['SMTP']['EMAIL']
     toaddr = toEmail
     
     msg = MIMEMultipart()  
@@ -34,9 +43,9 @@ def email(compressedFile):
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 
     
-    s = smtplib.SMTP('smtp.gmail.com', 587) 
+    s = smtplib.SMTP(config['SMTP']['SERVER'], config['SMTP']['PORT']) 
     s.starttls() 
-    s.login(fromaddr, 'okrs shoc ahtk idui') 
+    s.login(fromaddr, config['SMTP']['PASSWORD']) 
     
     text = msg.as_string() 
     
