@@ -1,4 +1,4 @@
-name: Test Backend
+name: Test Database and Backend
 
 on: [push]
 
@@ -20,7 +20,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install mysql-connector mysql
+    - name: Add sample data to Database
+      run: cd tests && python dbTestFiller.py
     - name: Fetch Latest Curie-CLI
       run: docker pull navanchauhan/curie-cli:latest
     - name: Run Backend Test
       run: cd tests && python backendTest.py
+    - name: Remove sample data
+      run: cd tests && pyton removeSample.py
