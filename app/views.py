@@ -247,11 +247,9 @@ def generate_pdbqts():
     return render_template('pdbqt_form.html',form=myform)
             
 
-tfWorking = 0
-
-if tfWorking == -1:
+if app.config['LSTM']:
     try:
-        import tensorrflow as tf
+        import tensorflow as tf
         tfWorking = 1
     except Exception as e:
         log(e,"EXCEPTION")

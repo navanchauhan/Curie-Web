@@ -12,6 +12,12 @@ DB_NAME = config['DATABASE']['NAME']
 UPLOAD_FOLDER = config['FILES']['UPLOAD_FOLDER']
 LOG_FOLDER = config['FILES']['LOG_FOLDER']
 INSTANT_EXEC = config['EXECUTION']['INSTANT']
+LSTM = config['FEATURES']['LSTM']
+
+if LSTM == 'True':
+    LSTM = True
+else:
+    LSTM = False
 
 if INSTANT_EXEC == 'True':
     INSTANT_EXEC = True
