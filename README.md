@@ -122,7 +122,20 @@ Once you have the `COLLADA2GLTF-bin` file, copy the file:
 cp COLLADA2GLTF-bin /usr/local/bin/collada2gltf
 ```          
 
-## 4. Running 
+## 4. Setting up the Database
+
+You will first need to create a database and grant all priviliges to a user. Make sure you have correctly configured the `config.ini` file. 
+
+After tha simply run the following commands. This will create the table(s) and check if the backend is working or not.
+
+```
+cd tests
+python3 dbTestFiller.py
+python3 backendTest.py
+python3 removeSample.py
+```
+
+## 5. Running 
 
 ### Without FastAPI
 

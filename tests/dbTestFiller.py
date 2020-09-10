@@ -10,6 +10,11 @@ mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USE
 mycursor = mycon.cursor()
 done = 1
 
+try:
+    mycursor.execute("create table curieweb (    id varchar(16) primary key, email nvarchar(255) NOT NULL,   protein LONGBLOB NOT NULL, protein_name VARCHAR(255),  ligand_pdbqt LONGBLOB,   ligand_smile VARCHAR(255),   ligand_name VARCHAR(255),   config LONGBLOB NOT NULL, date DATE, description VARCHAR(255),   done TINYINT DEFAULT 0, pdb VARCHAR(4),csv longblob)")
+except con.ProgrammingError:
+    print("Table Already Exists!")
+
 def convertToBinaryData(filename):
     with open(filename, 'rb') as file:
         binaryData = file.read()
