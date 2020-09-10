@@ -127,8 +127,8 @@ def status():
                 done="Queued"
             if protein_name == None:
                 protein_name = r[6]
-                
-            PDFReport = "./app/static/uploads/reports/" + str(jobID) + ".pdf"
+
+            PDFReport = "/static/uploads/reports/" + str(jobID) + ".pdf"
             AndroidModel = "/static/uploads/3DModels/" + str(jobID) + ".gltf"
             iOSModel = "/static/uploads/3DModels/" + str(jobID) + ".usdz"
 
