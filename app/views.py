@@ -10,13 +10,38 @@ from werkzeug.utils import secure_filename
 from random import choice, shuffle
 from string import digits, ascii_lowercase
 from pymed import PubMed
-from datetime import datetime
+from datetime import datetime,date
 import json
 import subprocess
+
+import logging
+import logzero
+from logzero import logger
+logzero.loglevel(logging.DEBUG)
+if app.config['SAVE_LOGS']:
+    logFile = app.config['LOG_FOLDER'] + date.today().strftime("%m-%d-%y") + ".log"
+    logzero.logfile(logFile, maxBytes=1e6, backupCount=3)
+
+import configparser
+misc = configparser.ConfigParser()
+misc.read('app/misc.ini')
+errors = misc['ERRORS']
 
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
 from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch, dockSingleForm, generatePDBQTS
+
+def log(message,logType="INFO"):
+    if app.config['LOG']:
+        if logType == "INFO":
+            logger.info(message)
+        elif logType == "DEBUG":
+            logger.debug(message)
+        elif logType == "EXCEPTION":
+            logger.exception(message)
+        elif logType == "DANGER":
+            logger.error(message)
+    return None
 
 def gen_word(N, min_N_dig, min_N_low):
     choose_from = [digits]*min_N_dig + [ascii_lowercase]*min_N_low
@@ -63,8 +88,8 @@ def pubmed():
 
     if request.method == 'POST' and form.validate_on_submit():
         q = form.query.data
-        print(form)
-        print(pubmed)
+        log(form,"DEBUG")
+        log(pubmed,"DEBUG")
         results = pubmed.query(q,max_results=100) 
         search = []
         for x in results:
@@ -153,25 +178,28 @@ def generate_pdbqts():
             smiles = myform.smiles.data
             name = myform.name.data
             if (len(pdbId)==0) and (len(smiles)==0):
-                print("Nothing Submitted!")
+                log("Nothing Submitted!","WARNING")
                 flash("Invalid Submission!",'danger')
             if len(smiles) != 0:
-                import oddt
+                try:
+                    import oddt
+                except ImportError:
+                    return render_template('error.html',code="OD00",description=errors['OD00'])
                 try:
                     mol = oddt.toolkit.readstring('smi', smiles)
                 except:
-                    return render_template('error.html',code="OD01",description="Could not convert SMILES to molecule, please check the SMILES")
+                    return render_template('error.html',code="OD01",description=errors['OD01'])
                 try:
                     mol.make3D()
                     mol.calccharges()
                 except:
-                    return render_template('error.html',code="OD02",description="Failed to add charges to molecule")
+                    return render_template('error.html',code="OD02",description=errors['OD02'])
                 from oddt.docking.AutodockVina import write_vina_pdbqt
                 
                 try:
                     write_vina_pdbqt(mol,'app',flexible=False)
                 except:
-                    return render_template('error.html',code="OD03",description="Failed to write the converted PDBQT file")
+                    return render_template('error.html',code="OD03",description=errors['OD03'])
                 path = ".pdbqt"
                 if ".pdbqt" in name:
                     fname = name
@@ -179,7 +207,10 @@ def generate_pdbqts():
                     fname = name + ".pdbqt"
                 return send_file(path,attachment_filename=fname,as_attachment=True)
             if len(pdbId) != 0:
-                from plip.basic import config
+                try:
+                    from plip.basic import config
+                except ImportError:
+                    return render_template('error.html',code="PL00",description=errors['PL00'])
                 from plip.exchange.webservices import fetch_pdb
                 from plip.structure.preparation import create_folder_if_not_exists, extract_pdbid
                 from plip.structure.preparation import tilde_expansion, PDBComplex
@@ -187,12 +218,15 @@ def generate_pdbqts():
                 try:
                     pdbfile, pdbid = fetch_pdb(pdbId.lower())
                 except:
-                    return render_template('error.html',code="PL01",description="Failed to fetch the PDB, please check the PDB Code")
+                    return render_template('error.html',code="PL01",description=errors['PL01'])
                 pdbpath = tilde_expansion('%s/%s.pdb' % (config.BASEPATH.rstrip('/'), pdbid))
                 create_folder_if_not_exists(config.BASEPATH)
                 with open(pdbpath, 'w') as g:
                     g.write(pdbfile)
-                import oddt
+                try:
+                    import oddt
+                except:
+                    return render_template('error.html',code="OD00",description=errors['OD00'])
                 from oddt.docking.AutodockVina import write_vina_pdbqt
                 try:
                     receptor = next(oddt.toolkit.readfile("pdb",pdbpath.split("./")[1]))
@@ -204,7 +238,7 @@ def generate_pdbqts():
                 try:
                     path = write_vina_pdbqt(receptor,'app',flexible=False)
                 except:
-                    return render_template('error.html',code="OD03",description="Failed to write the converted PDBQT file")
+                    return render_template('error.html',code="OD03",description=errors['OD03'])
                 os.rename(path,"app/.pdbqt")
                 path = ".pdbqt"
                 fname = pdbId.upper() + ".pdqbt"
@@ -213,15 +247,14 @@ def generate_pdbqts():
     return render_template('pdbqt_form.html',form=myform)
             
 
-
 tfWorking = 0
 
 if tfWorking == -1:
     try:
-        import tensorflow as tf
+        import tensorrflow as tf
         tfWorking = 1
-    except:
-        print("Could not load tensorflow model :/")
+    except Exception as e:
+        log(e,"EXCEPTION")
         tfWorking = 0
 
 if tfWorking == 1:
@@ -231,7 +264,7 @@ if tfWorking == 1:
     config = process_config("app/prod/config.json")
     modeler = LSTMChem(config, session="generate")
     gen = LSTMChemGenerator(modeler)
-    print("Testing Model")
+    log("Heating up model","INFO")
     gen.sample(1)
 
 @app.route('/Generate', methods=['GET','POST'])
@@ -242,12 +275,13 @@ def generate():
     with open("./app/prod/config.json") as config:
         import json
         j = json.loads(config.read())
-        print("Model Name:", j["exp_name"])
+        log(("Model Name:", j["exp_name"]),"INFO")
     
 
     if request.method == 'POST' and form.validate_on_submit():
-        print(tfWorking)
+        log(tfWorking,"DEBUG")
         if tfWorking == 0:
+            log("Failed to initialise model","DANGER")   
             flash("Failed to initialise the model!","danger")
         else:
             result = gen.sample(form.n.data)
@@ -260,7 +294,7 @@ def dock_upload():
     form = curieForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        print("Recieved task: ",form.description.data)
+        log(("Recieved task: ",form.description.data),"DEBUG")
         description = form.description.data
         target = form.target.data
         ligand = form.ligand.data
@@ -287,14 +321,15 @@ def dock_upload():
             receptorName = secure_filename(target.filename)
             sqlQuery = "insert into curieweb (id, email, protein, protein_name, ligand_pdbqt, ligand_name,date, description, config) values (%s,%s,%s,%s,%s,%s,CURDATE(),%s,%s) "
             jobID = gen_word(16, 1, 1)
-            print("Submitted JobID: ",jobID)
+            log(("Submitted JobID: ",jobID),"DEBUG")
             insert_tuple = (jobID,email,receptor,receptorName,ligandB,ligandName,description,config)
             mycursor.execute(sqlQuery,insert_tuple)
             mycon.commit()
 
-        print("Description",description)
+        log(("Description",description),"DEBUG")
         cwd = os.path.join(os.getcwd(),"app")
-        subprocess.Popen(['python3', 'dock-docker.py'],cwd=cwd)
+        if app.config['INSTANT_EXEC']:
+            subprocess.Popen(['python3', 'dock-docker.py'],cwd=cwd)
         return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 
     flash_errors(form)
@@ -305,7 +340,7 @@ def dock_upload_single():
     form = dockSingleForm()
 
     if request.method == 'POST' and form.validate_on_submit():
-        print("Recieved task: ",form.description.data)
+        log(("Recieved task: ",form.description.data),"DEBUG")
         description = form.description.data
         pdb = form.pdbID.data
         smile = form.smiles.data
@@ -323,10 +358,11 @@ def dock_upload_single():
         mycursor.execute(sqlQuery,insert_tuple)
         mycon.commit()
         
-        print("Description",description)
+        log(("Description",description),"DEBUG")
 
         cwd = os.path.join(os.getcwd(),"app")
-        subprocess.Popen(['python3', 'dock-single.py'],cwd=cwd)
+        if app.config['INSTANT_EXEC']:
+            subprocess.Popen(['python3', 'dock-single.py'],cwd=cwd)
         
         return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 

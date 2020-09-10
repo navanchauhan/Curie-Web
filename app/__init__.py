@@ -10,6 +10,23 @@ DB_USER = config['DATABASE']['USER']
 DB_PASSWORD = config['DATABASE']['PASSWORD']
 DB_NAME = config['DATABASE']['NAME']
 UPLOAD_FOLDER = config['FILES']['UPLOAD_FOLDER']
+LOG_FOLDER = config['FILES']['LOG_FOLDER']
+INSTANT_EXEC = config['EXECUTION']['INSTANT']
+
+if INSTANT_EXEC == 'True':
+    INSTANT_EXEC = True
+else:
+    INSTANT_EXEC = False
+
+LOG = True
+SAVE_LOGS = False
+
+if config['LOGS']['LOG'] == 'True':
+    LOG = True
+    if config['LOGS']['SAVE_LOGS'] == 'True':
+        SAVE_LOGS = True
+else:
+    LOG = False
 
 """
 # Hardcoded Values
