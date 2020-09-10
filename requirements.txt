@@ -26,3 +26,4 @@ lifelines
 scikit-plot
 pymed
 sentry-sdk[flask]
+logzero
