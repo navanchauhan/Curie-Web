@@ -149,9 +149,9 @@ python3 removeSample.py
 
 **There is a sample systemd file in the misc folder**
 
-Configure the file and then copy it to `/etc/systemd/system`
+* Configure the file and then copy it to `/etc/systemd/system`
 
-You can start the server by running `sudo systemctl start curie`
+* You can start the server by running `sudo systemctl start curie`
 
-To enable the server to start on boot run `sudo systemctl enable curie`
+* To enable the server to start on boot run `sudo systemctl enable curie`
 
