@@ -136,7 +136,7 @@ cp COLLADA2GLTF-bin /usr/local/bin/collada2gltf
 
 `gunicorn api:app -k uvicorn.workers.UvicornWorker -b "0.0.0.0:7589"`
 
-### SystemD
+### systemd
 
 **There is a sample systemd file in the misc folder**
 
