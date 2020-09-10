@@ -25,3 +25,4 @@ wget
 lifelines 
 scikit-plot
 pymed
+sentry-sdk[flask]

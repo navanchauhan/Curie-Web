@@ -27,4 +27,4 @@ jobs:
     - name: Run Backend Test
       run: cd tests && python backendTest.py
     - name: Remove sample data
-      run: cd tests && pyton removeSample.py
+      run: cd tests && python removeSample.py

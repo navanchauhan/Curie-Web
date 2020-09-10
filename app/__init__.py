@@ -1,5 +1,16 @@
 from flask import Flask
 
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+
+"""
+sentry_sdk.init(
+    dsn="https://7bc9916920c041479b69db97bdb279fa@o126149.ingest.sentry.io/5424142",
+    integrations=[FlaskIntegration()],
+    traces_sample_rate=1.0
+)
+"""
+
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
