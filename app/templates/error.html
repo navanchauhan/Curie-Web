@@ -5,7 +5,7 @@
     <h2>Oh Snap! An error occured</h2>
     <p>Error Code: {{code}}</p>
     <p>Error Description: {{description}}</p>
-    <section>
+    <!--<section>
         <style>
             #puzzle{
                 height: 40vh;
@@ -13,5 +13,14 @@
         </style>
         <div id="puzzle"></div>
         <script src="{{url_for('static',filename='js/missing_puzzle.js')}}"></script>
+    </section>-->
+    <section>
+        <style>
+            #chemical{
+                height: 40vh;
+            }
+        </style>
+        <div id="chemical"></div>
+        <script src="{{url_for('static',filename='js/chemical.js')}}"></script>
     </section>
 {% endblock %}

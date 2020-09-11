@@ -114,7 +114,7 @@ def status():
             mycursor.execute(sqlQuery)
             records = mycursor.fetchall()
             if records == []:
-                return render_template('job_status_error.html',job=jobID)
+                return render_template('error.html',code="DB01",description=errors['DB01'])
             r = records[0]
             protein_name = r[1]
             ligand_name = r[2]
@@ -346,6 +346,9 @@ def dock_upload_single():
         name = form.name.data
         email = form.email.data
 
+        if len(pdb) != 4:
+            return render_template("error.html",code="CW01",description=errors['CW01'])
+
         import mysql.connector as con
         mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
         mycursor = mycon.cursor()
@@ -356,7 +359,7 @@ def dock_upload_single():
         insert_tuple = (jobID,email,pdb,smile,name,description)
         mycursor.execute(sqlQuery,insert_tuple)
         mycon.commit()
-        
+
         log(("Description",description),"DEBUG")
 
         cwd = os.path.join(os.getcwd(),"app")
