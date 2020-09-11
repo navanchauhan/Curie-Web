@@ -1,15 +1,15 @@
 import mysql.connector as con
 
 import configparser
-config = configparser.ConfigParser()
-config.read('config.ini')
+iniConfig = configparser.ConfigParser()
+iniConfig.read('config.ini')
 
 try:
-    config['DATABASE']
+    iniConfig['DATABASE']
 except KeyError:
-    config.read("../config.ini")
+    iniConfig.read("../config.ini")
 
-mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
+mycon = con.connect(host=iniConfig['DATABASE']['HOST'],user=iniConfig['DATABASE']['USER'],password=iniConfig['DATABASE']['PASSWORD'],port=iniConfig['DATABASE']['PORT'],database=iniConfig['DATABASE']['NAME'])
 mycursor = mycon.cursor()
 
 sql_select_Query = "select * from curieweb where done=0 LIMIT 1"
@@ -28,7 +28,7 @@ def email(zipArchive):
     from email.mime.base import MIMEBase 
     from email import encoders 
     
-    fromaddr = config['SMTP']['EMAIL']
+    fromaddr = iniConfig['SMTP']['EMAIL']
     toaddr = toEmail
     
     msg = MIMEMultipart()  
@@ -46,9 +46,9 @@ def email(zipArchive):
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 
     
-    s = smtplib.SMTP(config['SMTP']['SERVER'], config['SMTP']['PORT']) 
+    s = smtplib.SMTP(iniConfig['SMTP']['SERVER'], iniConfig['SMTP']['PORT']) 
     s.starttls() 
-    s.login(fromaddr, config['SMTP']['PASSWORD']) 
+    s.login(fromaddr, iniConfig['SMTP']['PASSWORD']) 
     text = msg.as_string() 
     
     s.sendmail(fromaddr, toaddr, text) 

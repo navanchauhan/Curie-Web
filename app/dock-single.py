@@ -9,15 +9,15 @@ from collections import namedtuple
 import mysql.connector as con
 
 import configparser
-config = configparser.ConfigParser()
-config.read('config.ini')
+iniConfig = configparser.ConfigParser()
+iniConfig.read('config.ini')
 
 try:
-    config['DATABASE']
+    iniConfig['DATABASE']
 except KeyError:
-    config.read("../config.ini")
+    iniConfig.read("../config.ini")
 
-mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
+mycon = con.connect(host=iniConfig['DATABASE']['HOST'],user=iniConfig['DATABASE']['USER'],password=iniConfig['DATABASE']['PASSWORD'],port=iniConfig['DATABASE']['PORT'],database=iniConfig['DATABASE']['NAME'])
 mycursor = mycon.cursor()
 
 sql_select_Query = "SELECT id,email,pdb,ligand_smile,ligand_name,description,date FROM curieweb WHERE pdb IS NOT NULL AND done=0 LIMIT 1"
@@ -183,7 +183,7 @@ def email(zipArchive):
     from email.mime.base import MIMEBase 
     from email import encoders 
     
-    fromaddr = config['SMTP']['EMAIL']
+    fromaddr = iniConfig['SMTP']['EMAIL']
     
     msg = MIMEMultipart()  
     msg['From'] = fromaddr 
@@ -200,9 +200,9 @@ def email(zipArchive):
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 
     
-    s = smtplib.SMTP(config['SMTP']['SERVER'], config['SMTP']['PORT']) 
+    s = smtplib.SMTP(iniConfig['SMTP']['SERVER'], iniConfig['SMTP']['PORT']) 
     s.starttls() 
-    s.login(fromaddr, config['SMTP']['PASSWORD']) 
+    s.login(fromaddr, iniConfig['SMTP']['PASSWORD']) 
     text = msg.as_string() 
     
     s.sendmail(fromaddr, toaddr, text) 
@@ -245,6 +245,8 @@ with tempfile.TemporaryDirectory() as directory:
 	with open("config.txt","w") as file:
 		file.write(configuration)
 	os.system('obabel -:"%s" --gen3d -opdbqt -O%s.pdbqt' % (records[3],records[4]))
+	print("Ligand:",records[4])
+	print(str(records[4]+".pdbqt"))
 	os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s -c config.txt -dpi" % (pdbqt,str(records[4]+".pdbqt")))
 	z = "Curie_Web_Result_"+str(jobID)
 	zi = os.path.join(f,z)
