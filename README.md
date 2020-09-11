@@ -2,6 +2,8 @@
 
 ![Database and Backend](https://github.com/navanchauhan/Curie-Web/workflows/Test%20Database%20and%20Backend/badge.svg)
 
+![Curie-Web Cover](./misc/Title.png)
+
 Tested on: 
 * macOS 10.15 (Catalina)
 * Ubuntu 20.04 - Raspberry Pi 4
