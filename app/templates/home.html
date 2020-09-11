@@ -29,5 +29,30 @@
         <li><a href="{{ url_for('status')}}">Job Status</a> - Check the job status </li>
         <li><a href="{{ url_for('visualise')}}">Visualise</a> - Molecular Viewer </li>
     </ul>
+    <section>
+        <h2>Credits</h2>
+        <q>If I have seen further it is by standing on the shoulders of Giants.</q> - Sir Isaac Newton
+        <br>
+        This project would not have been possible without the following:
+        <br><br>
+        <h2><img src="{{url_for('static',filename='assets/pliplogo.svg')}}" width=100vw /> PLIP</h2>
+        
+        <ul>
+            <li>PLIP is used for binding site analysis, interaction detection and visualisations.</li>
+            <li>PLIP is powered by <a href="https://www.pharm.ai">PharmAI.</a></li>
+        </ul>
+
+        <h2>AutoDock Vina</h2>
+        <ul>
+            <li>AutoDock Vina is an open-source program for doing molecular docking. It was designed and implemented by Dr. Oleg Trott in the Molecular Graphics Lab at The Scripps Research Institute.</li>
+        </ul>
+
+        <h2>PyMOL</h2>
+        <ul>
+            <li>PyMOL is used for generating visualisations of protein-ligand complexes</li>
+            <li>PyMOL is a user-sponsored molecular visualization system on an open-source foundation, maintained and distributed by <a href="https://www.schrodinger.com">Schrödinger.</a></li>
+        </ul>
+
+        </section>
     <img src="{{url_for('static',filename='assets/workingInALaboratory.svg')}}" />
 {% endblock %}
