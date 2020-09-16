@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Curie Web</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/solar/bootstrap.min.css">
-    <link rel="stylesheet" href= href="{{ url_for('static', filename='css/solar.css') }}">
+    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/solar/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
@@ -50,7 +50,7 @@
         </ul>
       </div>
     </nav>
-    <header class="jumbotron jumbotron-fluid" style="background: url({{ url_for('static',filename='bg_blur.jpg')}}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;">
+    <header class="jumbotron jumbotron-fluid" style="background: url({{ url_for('static',filename='bg_blur.jpg')}}) no-repeat center center; -webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover;" alt="An image of a protein having PDB ID:6LU7 ">
         <div class="container">
             <h1 style="color: white;">Curie Web</h1>
         </div>
@@ -85,7 +85,7 @@
                       <p>The Curie Project aims to make the process of CADD from ideation to in-silico testing as easy as possible.</p>
                   </div>
               </div>
-              <p class="copyright">Copyright © 2020</p>
+              <p>Check License on GitHub UwU</p>
           </div>
       </footer>
   </div>
