@@ -14,6 +14,8 @@ from datetime import datetime,date
 import json
 import subprocess
 
+import requests
+
 import logging
 import logzero
 from logzero import logger
@@ -99,6 +101,20 @@ def pubmed():
     
     flash_errors(form)
     return render_template('search.html',form=form)
+
+@app.route('/Compound-Search',methods=['GET','POST'])
+def pubchem():
+    form = PyMedSearch()
+    
+    if request.method == 'POST' and form.validate_on_submit():
+        q = form.query.data
+        response = requests.get('https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/%s/property/Fingerprint2D,CanonicalSMILES,IsomericSMILES/JSON' % q.strip())
+        if response.status_code == 404:
+            return render_template('error.html',code="PC00",description=errors["PC00"])
+        search = response.json()["PropertyTable"]["Properties"]
+        print(search)
+        return render_template('search-pubchem.html',result=search,form=form)
+    return render_template('search-pubchem.html',form=form)
 
 @app.route('/Status',methods=['GET','POST'])
 def status():

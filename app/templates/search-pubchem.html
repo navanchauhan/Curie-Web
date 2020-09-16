@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <h1>SMILES Search</h1>
+    <p>Get Compound SMILES through PubChem.</p>
+    <form action="{{ url_for('pubchem') }}" method="post" enctype="multipart/form-data">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-row">
+                {{ form.query.label }}
+                {{ form.query(class="form-control")}}
+        </div>
+        <!--<div class="form-row">
+            {\{ form.modelSelection.label }}
+            {\{ form.modelSelection(class="form-control")}}
+        </div>-->
+        <br>
+        <div class="form-row">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    {% if result %}
+        <h3>Search Results</h3>
+        {% for x in range(result|length) %}
+        <!--<i>{\{result}}</i>-->
+        <!--<p>{{result[x]}}</p>-->
+        <div class="card mb-3">
+            <div class="row no-gutters">
+                <div class="col-md-4 text-white bg-dark">
+                    <div class="card-body">
+                    <img src="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{{result[x]['CID']}}/PNG" class="card-img">
+                </div>
+            </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title"><b>CID:</b> <a href="https://pubchem.ncbi.nlm.nih.gov/compound/{{result[x]['CID']}}">{{result[x]["CID"]}}</a></h5>
+                  <p class="card-text"><b>Canonical SMILES: </b>{{result[x]["CanonicalSMILES"]}}</p>
+                  <p class="card-text"><b>Isomeric SMILES: </b>{{result[x]["IsomericSMILES"]}}</p>
+                  <p class="card-text"><b>2D Fingerprint </b>{{result[x]["Fingerprint2D"]}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
