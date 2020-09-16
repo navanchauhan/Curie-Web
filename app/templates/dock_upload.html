@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% set active_page = "dock" %}
 {% block main %}
     <h2>Enter Your Configuration</h2>
     <form action="{{ url_for('dock_upload') }}" method="post" enctype="multipart/form-data">

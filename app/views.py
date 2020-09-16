@@ -152,37 +152,6 @@ def status():
         flash_errors(taskStatusForm)
     return render_template('job_status_form.html',form=taskStatusForm)
         
-@app.route('/basic-form', methods=['GET', 'POST'])
-def basic_form():
-    if request.method == 'POST':
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        email = request.form['email']
-
-        return render_template('result.html',
-                               firstname=firstname,
-                               lastname=lastname,
-                               email=email)
-
-    return render_template('form.html')
-
-@app.route('/wtform', methods=['GET', 'POST'])
-def wtform():
-    myform = MyForm()
-
-    if request.method == 'POST':
-        if myform.validate_on_submit():
-            # Note the difference when retrieving form data using Flask-WTF
-            # Here we use myform.firstname.data instead of request.form['firstname']
-            firstname = myform.firstname.data
-            lastname = myform.lastname.data
-            email = myform.email.data
-
-            flash('You have successfully filled out the form', 'success')
-            return render_template('result.html', firstname=firstname, lastname=lastname, email=email)
-
-        flash_errors(myform)
-    return render_template('wtform.html', form=myform)
 
 @app.route('/PDBQTs',methods=['GET','POST'])
 def generate_pdbqts():
@@ -406,9 +375,6 @@ def send_text_file(file_name):
     file_dot_text = file_name + '.txt'
     return app.send_static_file(file_dot_text)
 
-@app.route('/debug-sentry')
-def trigger_error():
-    division_by_zero = 1 / 0
 
 @app.after_request
 def add_header(response):
