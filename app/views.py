@@ -273,8 +273,8 @@ def generate():
 
     return render_template('generate.html',expName=j["exp_name"],epochs=j["num_epochs"],optimizer=j["optimizer"].capitalize(), form=form)
 
-@app.route('/Dock', methods=['GET', 'POST'])
-def dock_upload():
+@app.route('/Dock-Manual', methods=['GET', 'POST'])
+def dock_manual():
     form = curieForm()
 
     if request.method == 'POST' and form.validate_on_submit():
@@ -317,10 +317,10 @@ def dock_upload():
         return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 
     flash_errors(form)
-    return render_template('dock_upload.html', form=form)
+    return render_template('dock_manual.html', form=form)
 
-@app.route('/Dock-Single', methods=['GET', 'POST'])
-def dock_upload_single():
+@app.route('/Dock-Automatic', methods=['GET', 'POST'])
+def dock_automatic():
     form = dockSingleForm()
 
     if request.method == 'POST' and form.validate_on_submit():
@@ -354,7 +354,7 @@ def dock_upload_single():
         return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 
     flash_errors(form)
-    return render_template('dock_upload_single.html', form=form)
+    return render_template('dock_automatic.html', form=form)
 
 ###
 # The functions below should be applicable to all Flask apps.

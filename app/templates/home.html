@@ -7,8 +7,8 @@
     <p>The following are the currently active modules</p>
     <h3>Docking</h3>
     <ul>
-        <li><a href="{{ url_for('dock_upload') }}">Dock and Report (Manual)</a> - You can enter your AutoDock Vina configuration, upload the PDBQT files and it will perform the molecular docking and generate a PDF with proper visualisations and protein-interaction profillings (Using PLIP) </li>
-        <li><a href="{{ url_for('dock_upload_single') }}">Dock and Report (Automatic)</a> - You just enter in the PDB Code, target compound's SMILES structure and name, it will automatically find a binding location and then perform docking and report generation</li>
+        <li><a href="{{ url_for('dock_manual') }}">Dock and Report (Manual)</a> - You can enter your AutoDock Vina configuration, upload the PDBQT files and it will perform the molecular docking and generate a PDF with proper visualisations and protein-interaction profillings (Using PLIP) </li>
+        <li><a href="{{ url_for('dock_automatic') }}">Dock and Report (Automatic)</a> - You just enter in the PDB Code, target compound's SMILES structure and name, it will automatically find a binding location and then perform docking and report generation</li>
     </ul>
 
     <h3>Drug Designing</h3>

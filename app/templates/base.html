@@ -34,8 +34,8 @@
               Dock and Report
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{{ url_for('dock_upload') }}">Automatic</a>
-              <a class="dropdown-item" href="{{ url_for('dock_upload_single') }}">Manual</a>
+              <a class="dropdown-item" href="{{ url_for('dock_manual') }}">Automatic</a>
+              <a class="dropdown-item" href="{{ url_for('dock_automatic') }}">Manual</a>
             </div>
           </li>
           <li class="{{ 'nav-item active' if active_page == 'generate' else 'nav-item' }}">
@@ -86,8 +86,8 @@
                   <div class="col-sm-6 col-md-3 item">
                       <h3>Features</h3>
                       <ul>
-                          <li><a href="{{ url_for('dock_upload') }}">Dock (Manual)</a></li>
-                          <li><a href="{{ url_for('dock_upload_single') }}">Dock (Automatic)</a></li>
+                          <li><a href="{{ url_for('dock_manual') }}">Dock (Manual)</a></li>
+                          <li><a href="{{ url_for('dock_automatic') }}">Dock (Automatic)</a></li>
                           <li><a href="{{ url_for('pubmed') }}">PubMed Search</a></li>
                       </ul>
                   </div>
