@@ -1,5 +1,6 @@
 import mysql.connector as con
-
+from mysql.connector.errors import InterfaceError
+import sys
 import configparser
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -9,7 +10,11 @@ try:
 except KeyError:
     config.read("../config.ini")
 
-mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
+try:
+    mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
+except InterfaceError:
+    print("Could not connect to the database")
+    sys.exit(1)
 mycursor = mycon.cursor()
 
 # If we are running the CI on an actual server, try using the 6LU7 Mpro and Geraniin Job ID because Eucalyptol fails

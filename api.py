@@ -16,9 +16,16 @@ def gen_word(N, min_N_dig, min_N_low):
     shuffle(chars)
     return ''.join(chars)
 
+dbFailing = False
+
 import mysql.connector as con
-mycon = con.connect(host=flask_app.config['DB_HOST'],user=flask_app.config['DB_USER'],password=flask_app.config['DB_PASSWORD'],port=flask_app.config['DB_PORT'],database=flask_app.config['DB_NAME'])
-mycursor = mycon.cursor()
+from mysql.connector.errors import InterfaceError
+try:
+    mycon = con.connect(host=flask_app.config['DB_HOST'],user=flask_app.config['DB_USER'],password=flask_app.config['DB_PASSWORD'],port=flask_app.config['DB_PORT'],database=flask_app.config['DB_NAME'])
+    mycursor = mycon.cursor()
+except InterfaceError:
+    print("Could not connect to the database!")
+    dbFailing = True
 
 """
 @flask_app.route("/")
@@ -38,6 +45,8 @@ async def API_Version():
 
 @app.get("/v1/status/{job_id}")
 async def get_status(job_id: str):
+    if dbFailing:
+        return {"message":"Could not connect to the database"}
     sqlQuery = 'select id, protein_name, ligand_name, date, description, done from curieweb where id="%s"' % (job_id)
     mycursor.execute(sqlQuery)
     records = mycursor.fetchall()
@@ -48,6 +57,8 @@ async def get_status(job_id: str):
 
 @app.get("/v1/3DModels/{job_id}")
 async def get_models(job_id: str):
+    if dbFailing:
+        return {"message":"Could not connect to the database"}
     sqlQuery = 'select done from curieweb where id="%s"' % (job_id)
     mycursor.execute(sqlQuery)
     records = mycursor.fetchall()
@@ -59,6 +70,8 @@ async def get_models(job_id: str):
 
 @app.get("/v1/Report/{job_id}")
 async def get_report(job_id:str):
+    if dbFailing:
+        return {"message":"Could not connect to the database"}
     sqlQuery = 'select done from curieweb where id="%s"' % (job_id)
     mycursor.execute(sqlQuery)
     records = mycursor.fetchall()
@@ -71,6 +84,8 @@ async def get_report(job_id:str):
 
 @app.post("/v1/docking/automatic")
 async def docking_automatic(pdb: str, smiles:str,compound_name:str,email:str,description:str):
+    if dbFailing:
+        return {"message":"Could not connect to the database"}
     if len(pdb) != 0:
         return {"message": "Invalid PDB ID"}
     
