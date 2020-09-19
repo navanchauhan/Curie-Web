@@ -3,11 +3,26 @@
 {% block main %}
     <h1>About Curie Web</h1>
     <p>Curie Web is a web interface for my private Python Library called "Curie", with some aditional superpowers.</p>
-    <h4>Dock and Report</h4>
-    <p>This module uses AutoDock Vina to perform molecular docking on the specified molecular docking. It then uses PyMOL
-         to create high quality ray-traced visualisations. After finding and tabulating protein ligand interactions using PLIP,
-        it creates a PDF and emails you the report ( Along with supporting files )</p>
-    
+    <h4>Docking</h4>
+    <p>This section deals with Molecular Docking and protein-ligand interactions. It uses AutoDock Vina<sup>[1]</sup> for docking, PyMOL<sup>[2]</sup> for visualisations, and PLIP<sup>[3]</sup> for interactions and binding site detection.</p>
+    <h4>Drug Designing</h4>
+    <p>LSTM based on GitHub Code <sup>[4]</sup> which is based on the paper <sup>[5]</sup></p>
+    <h4>Research</h4>
+    <p>Quick Searches for PubMed and PubChem are powered by their respective APIs. Qrious app is written in SwiftUI and uses the FigShare API along with a pre-trained BERT<sup>[6]</sup> model.</p>
+    <section>
+        <h2>References</h4>
+        [1] O. Trott, A. J. Olson<cite>AutoDock Vina: improving the speed and accuracy of docking with a new scoring function, efficient optimization and multithreading, Journal of Computational Chemistry 31 (2010) 455-461</cite>
+        <br>
+        [2] Schrödinger, LLC <cite>The PyMOL Molecular Graphics System, Version 2.0</cite>
+        <br>
+        [3] Salentin et al. (2015) <cite>PLIP: fully automated protein-ligand interaction profiler. Nucl. Acids Res. (1 July 2015) 43 (W1): W443-W447</cite>
+        <br>
+        [4]
+        <br>
+        [5]
+        <br>
+        [6] T. Wolf et al. <cite>HuggingFace's Transformers: State-of-the-art Natural Language Processing</cite>
+    </section>
     <section>
         <style>
             #astronaut{
