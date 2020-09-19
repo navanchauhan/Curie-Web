@@ -14,6 +14,9 @@ from datetime import datetime,date
 import json
 import subprocess
 
+import mysql.connector as con
+from mysql.connector.errors import InterfaceError
+
 import requests
 
 import logging
@@ -123,9 +126,12 @@ def status():
     if request.method == 'POST':
         if taskStatusForm.validate_on_submit():
             jobID = taskStatusForm.jobID.data
-            import mysql.connector as con
-            mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
-            mycursor = mycon.cursor()
+            
+            try:
+                mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
+                mycursor = mycon.cursor()
+            except InterfaceError:
+                return render_template('error.html',code="DB00",description=errors['DB00'])
             sqlQuery = 'select id, protein_name, ligand_name, date, description, done, pdb from curieweb where id="%s"' % (jobID)
             mycursor.execute(sqlQuery)
             records = mycursor.fetchall()
@@ -286,9 +292,11 @@ def dock_manual():
         sx,sy,sz = str(form.size_x.data), str(form.size_y.data), str(form.size_z.data)
         email = form.email.data
 
-        import mysql.connector as con
-        mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
-        mycursor = mycon.cursor()
+        try:
+            mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
+            mycursor = mycon.cursor()
+        except InterfaceError:
+            return render_template("error.html",code="DB00",description=errors['DB00'])
 
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
@@ -334,9 +342,11 @@ def dock_automatic():
         if len(pdb) != 4:
             return render_template("error.html",code="CW01",description=errors['CW01'])
 
-        import mysql.connector as con
-        mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
-        mycursor = mycon.cursor()
+        try:
+            mycon = con.connect(host=app.config['DB_HOST'],user=app.config['DB_USER'],password=app.config['DB_PASSWORD'],port=app.config['DB_PORT'],database=app.config['DB_NAME'])
+            mycursor = mycon.cursor()
+        except InterfaceError:
+            return render_template('error.html',code="DB00",description=errors['DB00'])
 
         sqlQuery = "insert into curieweb (id, email, pdb, ligand_smile, ligand_name, date, description) values (%s,%s,%s,%s,%s,CURDATE(),%s) "
         jobID = gen_word(16, 1, 1)
