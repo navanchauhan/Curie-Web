@@ -52,4 +52,4 @@ class generatePDBQTS(FlaskForm):
     name = StringField('Compound Name (Optional)')
 
 class PyMedSearch(FlaskForm):
-    query = StringField('Search Query for PubMed',default="Query",validators=[DataRequired()])
+    query = StringField('Search Query',default="Query",validators=[DataRequired()])
