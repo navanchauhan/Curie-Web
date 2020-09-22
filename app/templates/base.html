@@ -34,8 +34,8 @@
               Dock and Report
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{{ url_for('dock_manual') }}">Automatic</a>
-              <a class="dropdown-item" href="{{ url_for('dock_automatic') }}">Manual</a>
+              <a class="dropdown-item" href="{{ url_for('dock_automatic') }}">Automatic</a>
+              <a class="dropdown-item" href="{{ url_for('dock_manual') }}">Manual</a>
             </div>
           </li>
           <li class="{{ 'nav-item active' if active_page == 'generate' else 'nav-item' }}">
