@@ -27,4 +27,4 @@ scikit-plot
 pymed
 logzero
 six
-oddt
+git+https://github.com/oddt/oddt
