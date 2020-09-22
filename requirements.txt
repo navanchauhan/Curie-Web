@@ -11,7 +11,7 @@ email_validator
 fastapi==0.59.0
 tabulate
 untangle
-mysql_connector
+mysql-connector-python
 mysql
 uvicorn
 bunch
@@ -26,3 +26,4 @@ lifelines
 scikit-plot
 pymed
 logzero
+oddt
