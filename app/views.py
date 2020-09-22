@@ -32,6 +32,8 @@ misc = configparser.ConfigParser()
 misc.read('app/misc.ini')
 errors = misc['ERRORS']
 
+base = os.getcwd()
+
 # Note: that when using Flask-WTF we need to import the Form Class that we created
 # in forms.py
 from .forms import MyForm, curieForm, statusForm, generateSMILES, PyMedSearch, dockSingleForm, generatePDBQTS
@@ -232,7 +234,7 @@ def generate_pdbqts():
                     return render_template('error.html',code="OD03",description=errors['OD03'])
                 os.rename(path,"app/.pdbqt")
                 path = ".pdbqt"
-                fname = pdbId.upper() + ".pdqbt"
+                fname = pdbId.upper() + ".pdbqt"
                 return send_file(path,attachment_filename=fname,as_attachment=True) 
         flash_errors(myform)
     return render_template('pdbqt_form.html',form=myform)
@@ -319,9 +321,11 @@ def dock_manual():
             mycon.commit()
 
         log(("Description",description),"DEBUG")
-        cwd = os.path.join(os.getcwd(),"app")
+        print(base)
+        cwd = os.path.join(base,"app")
+
         if app.config['INSTANT_EXEC']:
-            subprocess.Popen(['python3', 'dock-docker.py'],cwd=cwd)
+            subprocess.Popen(['python3', 'dock-manual.py'],cwd=cwd)
         return render_template('display_result.html', filename="OwO", description=description,job=jobID)
 
     flash_errors(form)
@@ -357,7 +361,9 @@ def dock_automatic():
 
         log(("Description",description),"DEBUG")
 
-        cwd = os.path.join(os.getcwd(),"app")
+        #cwd = os.path.join(os.getcwd(),"app")
+        cwd = os.path.join(base,"app")
+
         if app.config['INSTANT_EXEC']:
             subprocess.Popen(['python3', 'dock-single.py'],cwd=cwd)
         
