@@ -80,7 +80,6 @@ def RemoveAllFilesMatching(directory,pattern):
 	FileList = glob.glob(directory+"/*"+pattern)
 	for FilePath in FileList:
 		try:
-			print(FilePath)
 			os.remove(FilePath)
 		except:
 			print("Error in removing misc file")
@@ -138,7 +137,14 @@ with tempfile.TemporaryDirectory() as directory:
     copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
     get3DModel(receptor_name,ligand_name.replace(".pdbqt","_out.pdbqt"))
     os.system("collada2gltf -i model.dae -o model.gltf")
-    copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
+    try:
+        copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
+    except:
+        print("Does not have Collada2GLTF Installed")
+        email(zi)
+        mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+        mycon.commit()
+        exit(0)
     arch = os.popen("uname -m").read()
     print("Generating 3D Model")
     if "x86" in arch:

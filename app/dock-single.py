@@ -221,7 +221,6 @@ def RemoveAllFilesMatching(directory,pattern):
 	FileList = glob.glob(directory+"/*"+pattern)
 	for FilePath in FileList:
 		try:
-			print(FilePath)
 			os.remove(FilePath)
 		except:
 			print("Error in removing misc file")
