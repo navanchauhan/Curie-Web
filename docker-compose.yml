@@ -1,0 +1,19 @@
+version: "2"
+services:
+  app:
+    build: .
+    links:
+      - db
+    ports:
+      - "8080:8080"
+  db:
+    image: mysql:8.0
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: curie
+      MYSQL_USER: curieweb
+      MYSQL_PASSWORD: curie-web-uwu
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
