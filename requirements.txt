@@ -26,5 +26,4 @@ lifelines
 scikit-plot
 pymed
 logzero
-six
-git+https://github.com/oddt/oddt
+oddt
