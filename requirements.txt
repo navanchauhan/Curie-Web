@@ -26,4 +26,5 @@ lifelines
 scikit-plot
 pymed
 logzero
+six
 oddt
