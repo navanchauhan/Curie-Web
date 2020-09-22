@@ -68,6 +68,23 @@ def get3DModel(protein,ligand):
     cmd.save("model.dae")
     session.stop()
 
+def CopyContentOfFolder(sauce,destination):
+	src_files = os.listdir(sauce)
+	for file_name in src_files:
+		full_file_name = os.path.join(sauce, file_name)
+		if os.path.isfile(full_file_name):
+			copy(full_file_name, destination)
+
+def RemoveAllFilesMatching(directory,pattern):
+	print(directory+"/*"+pattern)
+	FileList = glob.glob(directory+"/*"+pattern)
+	for FilePath in FileList:
+		try:
+			print(FilePath)
+			os.remove(FilePath)
+		except:
+			print("Error in removing misc file")
+
 receptor_name = "protein.pdbqt"
 ligand_name = "ligand.pdbqt"
 description = "Curie Web Task"
@@ -87,41 +104,43 @@ date = r[8]
 if r[9] is not None:
     description = r[9]
 
-import os
+import os,glob
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
 reportDirectory = os.path.join(f,"reports")
+scripts = os.path.join(cd,"scripts")
 modelDirectory = os.path.join(f,"3DModels")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
 print(f)
 import tempfile
-from shutil import make_archive, copyfile
+from shutil import make_archive, copyfile,copy
 
 with tempfile.TemporaryDirectory() as directory:
     print('The created temporary directory is %s' % directory)
     os.chdir(directory)
-#    copy(t,os.getcwd())
-#    copy(r,os.getcwd())
-#    copy(c, os.getcwd())
     with open(receptor_name,"wb") as file:
         file.write(targetB)
     with open(ligand_name,"wb") as file:
         file.write(ligandB)
     with open("config.txt","wb") as file:
         file.write(configB)
-    os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s  -c config.txt -dpi" % (receptor_name,ligand_name))
-    #copy("report.pdf",f)
+    # Legacy Docker Curie-Cli Run
+    #os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s  -c config.txt -dpi" % (receptor_name,ligand_name))
+    CopyContentOfFolder(scripts,directory)
+    os.system("./main.sh -r %s -l %s -c config.txt -dpi" % (receptor_name,ligand_name))
+    RemoveAllFilesMatching(directory,".py")
+    RemoveAllFilesMatching(directory,".sh")
     z = "Curie_Web_Result_"+str(jobID)
     zi = os.path.join(f,z)
     make_archive(zi, 'zip', directory)
-    #copy(("Curie_Web_Result_"+str(jobID)),f)
     copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
     get3DModel(receptor_name,ligand_name.replace(".pdbqt","_out.pdbqt"))
     os.system("collada2gltf -i model.dae -o model.gltf")
     copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
     arch = os.popen("uname -m").read()
+    print("Generating 3D Model")
     if "x86" in arch:
         os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
     elif "aarch64" in arch:
@@ -131,6 +150,5 @@ with tempfile.TemporaryDirectory() as directory:
     except:
         print("Could not generate USDZ file")
     email(zi)
-    #print((str(zi) + ".zip"))
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
     mycon.commit()    

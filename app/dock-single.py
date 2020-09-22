@@ -209,6 +209,23 @@ def email(zipArchive):
     s.quit() 
 
 
+def CopyContentOfFolder(sauce,destination):
+	src_files = os.listdir(sauce)
+	for file_name in src_files:
+		full_file_name = os.path.join(sauce, file_name)
+		if os.path.isfile(full_file_name):
+			copy(full_file_name, destination)
+
+def RemoveAllFilesMatching(directory,pattern):
+	print(directory+"/*"+pattern)
+	FileList = glob.glob(directory+"/*"+pattern)
+	for FilePath in FileList:
+		try:
+			print(FilePath)
+			os.remove(FilePath)
+		except:
+			print("Error in removing misc file")
+
 inPDB = records[2]
 jobID = records[0]
 toaddr = records[1]
@@ -218,16 +235,17 @@ date = records[6]
 #pdb_file_name = pdbpath.split('/')[-1]
 #pdbpath="./6lu7.pdb"
 
-import os
+import os,glob
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
+scripts = os.path.join(cd,"scripts")
 reportDirectory = os.path.join(f,"reports")
 modelDirectory = os.path.join(f,"3DModels")
 #t = os.path.join(f,"receptor",target)
 #r = os.path.join(f,"ligands",ligand)
 #c = os.path.join(f,"configs",config)
 import tempfile
-from shutil import make_archive, copyfile
+from shutil import make_archive, copyfile,copy
 import time
 
 with tempfile.TemporaryDirectory() as directory:
@@ -247,7 +265,11 @@ with tempfile.TemporaryDirectory() as directory:
 	os.system('obabel -:"%s" --gen3d -opdbqt -O%s.pdbqt' % (records[3],records[4]))
 	print("Ligand:",records[4])
 	print(str(records[4]+".pdbqt"))
-	os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s -c config.txt -dpi" % (pdbqt,str(records[4]+".pdbqt")))
+	CopyContentOfFolder(scripts,directory)
+	os.system("./main.sh -r %s -l %s -c config.txt -dpi" % (pdbqt,str(records[4]+".pdbqt")))
+	#os.system("docker run --rm -v ${PWD}:/results -w /results -u $(id -u ${USER}):$(id -g ${USER}) navanchauhan/curie-cli -r %s -l %s -c config.txt -dpi" % (pdbqt,str(records[4]+".pdbqt")))
+	RemoveAllFilesMatching(directory,".py")
+	RemoveAllFilesMatching(directory,".sh")
 	z = "Curie_Web_Result_"+str(jobID)
 	zi = os.path.join(f,z)
 	make_archive(zi, 'zip', directory)
@@ -256,6 +278,7 @@ with tempfile.TemporaryDirectory() as directory:
 	os.system("collada2gltf -i model.dae -o model.gltf")
 	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
 	arch = os.popen("uname -m").read()
+	print("Generating 3D Model")
 	if "x86" in arch:
 		os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
 	elif "aarch64" in arch:
@@ -264,8 +287,6 @@ with tempfile.TemporaryDirectory() as directory:
 		copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
 	except:
 		print("Could not generate USDZ file")
-	#copy(("Curie_Web_Result_"+str(jobID)),f)
 	email(zi)
-	#print((str(zi) + ".zip"))
 	mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
 	mycon.commit()
