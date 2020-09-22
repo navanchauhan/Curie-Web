@@ -20,8 +20,8 @@ if GitHubWorkflow:
     password = returnValue("CURIE_PASSWORD")
     fromaddr = returnValue("CURIE_EMAIL")
     emailServer = returnValue("CURIE_EMAIL_SERVER")
-    emailPort = returnValye("CURIE_EMAIL_PORT")
-    emailPassword = returnValye("CURIE_EMAIL_PASSWORD")
+    emailPort = returnValue("CURIE_EMAIL_PORT")
+    emailPassword = returnValue("CURIE_EMAIL_PASSWORD")
 else:
     import configparser
     config = configparser.ConfigParser()
