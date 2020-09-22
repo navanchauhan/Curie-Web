@@ -18,7 +18,7 @@ if GitHubWorkflow:
     user = returnValue("CURIE_USER")
     port = returnValue("CURIE_PORT")
     password = returnValue("CURIE_PASSWORD")
-    fromaddr = returnValue("CURIE_EMAIL")
+    fromaddress = returnValue("CURIE_EMAIL")
     emailServer = returnValue("CURIE_EMAIL_SERVER")
     emailPort = returnValue("CURIE_EMAIL_PORT")
     emailPassword = returnValue("CURIE_EMAIL_PASSWORD")
@@ -37,7 +37,7 @@ else:
     user = v['USER']
     password = v['PASSWORD']
     port = v['PORT']
-    fromaddr = config['SMTP']['EMAIL']
+    fromaddress = config['SMTP']['EMAIL']
     emailServer = config['SMTP']['SERVER']
     emailPort = config['SMTP']['PORT'] 
     emailPassword = config['SMTP']['PASSWORD'] 
@@ -63,7 +63,7 @@ def email(compressedFile):
     from email.mime.base import MIMEBase 
     from email import encoders 
     
-    fromaddr = fromaddr
+    fromaddr = fromaddress
     toaddr = toEmail
     
     msg = MIMEMultipart()  
