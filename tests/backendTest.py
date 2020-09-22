@@ -1,17 +1,50 @@
+import os
 import mysql.connector as con
 from mysql.connector.errors import InterfaceError
-import sys
-import configparser
-config = configparser.ConfigParser()
-config.read('config.ini')
+
+GitHubWorkflow = True
 
 try:
-    config['DATABASE']
-except KeyError:
-    config.read("../config.ini")
+    print(os.environ['GITHUB_ACTIONS'])
+except:
+    GitHubWorkflow = False
+
+def returnValue(key):
+    return os.environ[key]
+
+if GitHubWorkflow:
+    host = returnValue("CURIE_HOST")
+    db = returnValue("CURIE_DB")
+    user = returnValue("CURIE_USER")
+    port = returnValue("CURIE_PORT")
+    password = returnValue("CURIE_PASSWORD")
+    fromaddr = returnValue("CURIE_EMAIL")
+    emailServer = returnValue("CURIE_EMAIL_SERVER")
+    emailPort = returnValye("CURIE_EMAIL_PORT")
+    emailPassword = returnValye("CURIE_EMAIL_PASSWORD")
+else:
+    import configparser
+    config = configparser.ConfigParser()
+    config.read('config.ini')
+    try:
+        config['DATABASE']
+    except KeyError:
+        config.read("../config.ini")
+    v = config['DATABASE']
+
+    host = v['HOST']
+    db = v['NAME']
+    user = v['USER']
+    password = v['PASSWORD']
+    port = v['PORT']
+    fromaddr = config['SMTP']['EMAIL']
+    emailServer = config['SMTP']['SERVER']
+    emailPort = config['SMTP']['PORT'] 
+    emailPassword = config['SMTP']['PASSWORD'] 
+
 
 try:
-    mycon = con.connect(host=config['DATABASE']['HOST'],user=config['DATABASE']['USER'],password=config['DATABASE']['PASSWORD'],port=config['DATABASE']['PORT'],database=config['DATABASE']['NAME'])
+    mycon = con.connect(host=host,user=user,password=password,port=port,database=db)
 except InterfaceError:
     print("Could not connect to the database")
     sys.exit(1)
@@ -30,7 +63,7 @@ def email(compressedFile):
     from email.mime.base import MIMEBase 
     from email import encoders 
     
-    fromaddr = config['SMTP']['EMAIL']
+    fromaddr = fromaddr
     toaddr = toEmail
     
     msg = MIMEMultipart()  
@@ -48,9 +81,9 @@ def email(compressedFile):
     p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
     msg.attach(p) 
     
-    s = smtplib.SMTP(config['SMTP']['SERVER'], config['SMTP']['PORT']) 
+    s = smtplib.SMTP(emailServer, emailPort) 
     s.starttls() 
-    s.login(fromaddr, config['SMTP']['PASSWORD']) 
+    s.login(fromaddr, emailPassword) 
     
     text = msg.as_string() 
     
@@ -59,7 +92,7 @@ def email(compressedFile):
 
 receptor_name = "protein.pdbqt"
 ligand_name = "ligand.pdbqt"
-description = "GitHub Action Test"
+description = "Test"
 
 #print(records[0])
 r = records[0]
@@ -103,6 +136,7 @@ with tempfile.TemporaryDirectory() as directory:
     z = "Curie_Web_Result_"+str(jobID)
     zi = os.path.join(f,z)
     make_archive(zi, 'zip', directory)
-    #email(zi)
+    email(zi)
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
     mycon.commit()    
+
