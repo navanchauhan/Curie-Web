@@ -103,6 +103,6 @@ with tempfile.TemporaryDirectory() as directory:
     z = "Curie_Web_Result_"+str(jobID)
     zi = os.path.join(f,z)
     make_archive(zi, 'zip', directory)
-    email(zi)
+    #email(zi)
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
     mycon.commit()    
