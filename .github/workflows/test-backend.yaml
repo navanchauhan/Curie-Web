@@ -10,17 +10,18 @@ jobs:
       matrix:
         python-version: [3.7]
 
+    env:
+     CURIE_DB: ${{ secrets.CURIE_DB }}
+     CURIE_EMAIL: ${{ secrets.CURIE_EMAIL }}
+     CURIE_EMAIL_PASSWORD: ${{ secrets.CURIE_EMAIL_PASSWORD }}
+     CURIE_EMAIL_PORT: ${{ secrets.CURIE_EMAIL_PORT }}
+     CURIE_EMAIL_SERVER: ${{ secrets.CURIE_EMAIL_SERVER }}
+     CURIE_HOST: ${{ secrets.CURIE_HOST }}
+     CURIE_PASSWORD: ${{ secrets.CURIE_PASSWORD }}
+     CURIE_PORT: ${{ secrets.CURIE_PORT }}
+     CURIE_USER: ${{ secrets.CURIE_USER }}
+
     steps:
-    - env:
-        CURIE_DB: ${{ secrets.CURIE_DB }}
-        CURIE_EMAIL: ${{ secrets.CURIE_EMAIL }}
-        CURIE_EMAIL_PASSWORD: ${{ secrets.CURIE_EMAIL_PASSWORD }}
-        CURIE_EMAIL_PORT: ${{ secrets.CURIE_EMAIL_PORT }}
-        CURIE_EMAIL_SERVER: ${{ secrets.CURIE_EMAIL_SERVER }}
-        CURIE_HOST: ${{ secrets.CURIE_HOST }}
-        CURIE_PASSWORD: ${{ secrets.CURIE_PASSWORD }}
-        CURIE_PORT: ${{ secrets.CURIE_PORT }}
-        CURIE_USER: ${{ secrets.CURIE_USER }}
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
