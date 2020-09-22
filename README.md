@@ -8,6 +8,25 @@ Tested on:
 * macOS 10.15 (Catalina)
 * Ubuntu 20.04 - Raspberry Pi 4
 
+# Quick Start (Docker-Compose)
+
+You can quickly get started and test Curie-Web without needing to manage dependencies by using the `docker-compose` image. This has all features except AR/3D Model support and should be production ready.
+
+
+```
+git clone https://github.com/navanchauhan/Curie-Web
+cd Curie-Web
+docker-compose up
+```
+
+Do not forget to edit `config.ini` for the email section. Do not change the database settings for running it via docker. 
+
+## Caveat(s):
+
+* This does not support generating a 3D Model and thus, AR viewer will not work on the Job Status page.
+
+# Installation
+
 ## 1. Installing Dependencies
 
 ### 1.1 Docker
