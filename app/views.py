@@ -156,7 +156,17 @@ def status():
             AndroidModel = "/static/uploads/3DModels/" + str(jobID) + ".gltf"
             iOSModel = "/static/uploads/3DModels/" + str(jobID) + ".usdz"
 
-            return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done,PDFReport=PDFReport,AndroidModel=AndroidModel,iOSModel=iOSModel)
+            uploadsFolder = os.path.join(base,"app/static/uploads/")
+            if os.path.exists(os.path.join(uploadsFolder,"reports",str(jobID)+".pdf")):
+                reportDone = 'exists'
+            else:
+                reportDone = False
+            if os.path.exists(os.path.join(uploadsFolder,"3DModels",str(jobID)+".gltf")):
+                ModelDone = 'exists'
+            else:
+                ModelDone = False
+
+            return render_template('job_status.html',ID=jobID,pn=protein_name,ln=ligand_name,subDate=date,desc=description,status=done,model=ModelDone,report=reportDone,PDFReport=PDFReport,AndroidModel=AndroidModel,iOSModel=iOSModel)
         flash_errors(taskStatusForm)
     return render_template('job_status_form.html',form=taskStatusForm)
         
