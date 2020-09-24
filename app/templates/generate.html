@@ -33,8 +33,8 @@
         <canvas id="canvas-{{x}}" width="500" height="500"></canvas>
         <script>
             SmilesDrawer.parse('{{result[0]}}', function(tree) {
-                smilesDrawer.draw(tree, "canvas-{{x}}", "dark", false);
-                console.log(smilesDrawer.draw(tree, "canvas-{{x}}", "dark", false))
+                smilesDrawer.draw(tree, "canvas-{{x}}", "light", false);
+                console.log(smilesDrawer.draw(tree, "canvas-{{x}}", "light", false))
               });
           </script>
         {% endfor %}
