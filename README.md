@@ -10,7 +10,7 @@ Tested on:
 
 # Quick Start (Docker-Compose)
 
-You can quickly get started and test Curie-Web without needing to manage dependencies by using the `docker-compose` image. This has all features except AR/3D Model support and should be production ready.
+You can quickly get started and test Curie-Web without needing to manage dependencies by using the `docker-compose` image. This has all features except AR/3D Model support and LSTM Generator. Otherwise, it is production ready.
 
 
 ```
@@ -54,6 +54,12 @@ In case you have problems installing it, install it from the forked repo [navanc
 macOS users can use Homebrew to install it via `brew install open-babel`
 
 Users using apt can install it via `sudo apt install openbabel python3-openbabel`
+
+### 1.5 Tensorflow (Optional)
+
+Please ensure you install Tensorflow 2.x.
+
+If tensorflow is not properly installed, it will automatically disable the LSTM Module.
 
 ## 2. Changing the Configuration
 
@@ -176,3 +182,11 @@ python3 removeSample.py
 
 * To enable the server to start on boot run `sudo systemctl enable curie`
 
+
+## Misc.
+
+### Fine-Tuning the LSTM Module
+
+Currently the base model has been trained on 1.5 million compounds and took ~4 hours to train on Google Colab's GPU runtime.
+
+*Information to be added soon*
