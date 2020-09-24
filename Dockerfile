@@ -29,8 +29,8 @@ EXPOSE 8080
 
 WORKDIR /curie-web
 
-COPY requirements.txt /curie-web
-RUN python3 -m pip install -r requirements.txt
+COPY requirements-docker.txt /curie-web
+RUN python3 -m pip install -r requirements-docker.txt
 
 # Install PLIP
 RUN git clone https://github.com/navanchauhan/plip source \

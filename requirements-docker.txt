@@ -14,9 +14,12 @@ untangle
 mysql-connector-python
 mysql
 uvicorn
+bunch
 tqdm
 prettytable
 gradio 
+git+https://github.com/bp-kelley/descriptastorus
+tensorflow-cpu>=2.0 
 pandas_flavor 
 subword_nmt 
 wget 
@@ -24,3 +27,4 @@ lifelines
 scikit-plot
 pymed
 logzero
+oddt
