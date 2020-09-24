@@ -44,4 +44,7 @@ COPY app /curie-web/app
 
 COPY run.py /curie-web
 COPY api.py /curie-web
+
+COPY lstm_chem /curie-web/lstm_chem
+
 CMD gunicorn -w 4 api:app -k uvicorn.workers.UvicornWorker -b "0.0.0.0:8080"

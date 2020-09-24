@@ -10,7 +10,7 @@ Tested on:
 
 # Quick Start (Docker-Compose)
 
-You can quickly get started and test Curie-Web without needing to manage dependencies by using the `docker-compose` image. This has all features except AR/3D Model support and LSTM Generator. Otherwise, it is production ready.
+You can quickly get started and test Curie-Web without needing to manage dependencies by using the `docker-compose` image. This has all features except AR/3D Model support. Otherwise, it is production ready.
 
 
 ```
