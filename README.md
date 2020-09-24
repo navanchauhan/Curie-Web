@@ -164,11 +164,11 @@ python3 removeSample.py
 
 ## 5. Running 
 
-### Without FastAPI
+### Without API Support 
 
-`gunicorn api:app -b "0.0.0.0:7589"`
+`gunicorn app:app -b "0.0.0.0:7589"`
 
-### With FastAPI
+### With API Support (FastAPI)
 
 `gunicorn api:app -k uvicorn.workers.UvicornWorker -b "0.0.0.0:7589"`
 
