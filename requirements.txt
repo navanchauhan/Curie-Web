@@ -15,12 +15,5 @@ mysql-connector-python
 mysql
 uvicorn
 tqdm
-prettytable
-gradio 
-pandas_flavor 
-subword_nmt 
-wget 
-lifelines 
-scikit-plot
 pymed
 logzero
