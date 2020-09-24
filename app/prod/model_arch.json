@@ -4,6 +4,20 @@
     "name": "sequential",
     "layers": [
       {
+        "class_name": "InputLayer",
+        "config": {
+          "batch_input_shape": [
+            null,
+            null,
+            47
+          ],
+          "dtype": "float32",
+          "sparse": false,
+          "ragged": false,
+          "name": "lstm_input"
+        }
+      },
+      {
         "class_name": "LSTM",
         "config": {
           "name": "lstm",
@@ -137,13 +151,8 @@
           "bias_constraint": null
         }
       }
-    ],
-    "build_input_shape": [
-      null,
-      null,
-      47
     ]
   },
-  "keras_version": "2.3.0-tf",
+  "keras_version": "2.4.0",
   "backend": "tensorflow"
 }
