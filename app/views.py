@@ -15,7 +15,7 @@ import json
 import subprocess
 
 import mysql.connector as con
-from mysql.connector.errors import InterfaceError
+from mysql.connector.errors import InterfaceError,DatabaseError
 
 import requests
 
@@ -134,6 +134,8 @@ def status():
                 mycursor = mycon.cursor()
             except InterfaceError:
                 return render_template('error.html',code="DB00",description=errors['DB00'])
+            except DatabaseError:
+                return render_template('error.html',code="DB02",description=errors['DB02'])
             sqlQuery = 'select id, protein_name, ligand_name, date, description, done, pdb from curieweb where id="%s"' % (jobID)
             mycursor.execute(sqlQuery)
             records = mycursor.fetchall()
@@ -309,6 +311,8 @@ def dock_manual():
             mycursor = mycon.cursor()
         except InterfaceError:
             return render_template("error.html",code="DB00",description=errors['DB00'])
+        except DatabaseError:
+            return render_template("error.html",code="DB02",description=errors['DB02'])
 
         import tempfile
         with tempfile.TemporaryDirectory() as directory:
@@ -361,6 +365,8 @@ def dock_automatic():
             mycursor = mycon.cursor()
         except InterfaceError:
             return render_template('error.html',code="DB00",description=errors['DB00'])
+        except DatabaseError:
+            return render_template("error.html",code="DB02",description=errors['DB02'])
 
         sqlQuery = "insert into curieweb (id, email, pdb, ligand_smile, ligand_name, date, description) values (%s,%s,%s,%s,%s,CURDATE(),%s) "
         jobID = gen_word(16, 1, 1)

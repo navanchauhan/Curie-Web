@@ -19,12 +19,15 @@ def gen_word(N, min_N_dig, min_N_low):
 dbFailing = False
 
 import mysql.connector as con
-from mysql.connector.errors import InterfaceError
+from mysql.connector.errors import InterfaceError, DatabaseError
 try:
     mycon = con.connect(host=flask_app.config['DB_HOST'],user=flask_app.config['DB_USER'],password=flask_app.config['DB_PASSWORD'],port=flask_app.config['DB_PORT'],database=flask_app.config['DB_NAME'])
     mycursor = mycon.cursor()
 except InterfaceError:
     print("Could not connect to the database!")
+    dbFailing = True
+except DatabaseError:
+    print("Unknown Host")
     dbFailing = True
 
 """
