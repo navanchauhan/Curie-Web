@@ -25,8 +25,11 @@
     }
     </style>
 
-    <p>A detailed zip file containing this PDF, along with all supporting files (configuration, pictures, protein-ligands e.t.c) has been sent to your email.</p>
+    <p>A detailed zip file containing the report PDF, along with all supporting files (configuration, pictures, protein-ligands e.t.c) has been sent to your email.</p>
 
+{% endif %}
+
+    {% if model == 'exists' %}
     <h3>AR Model</h3>
 
     <section>
@@ -34,16 +37,17 @@
         <script nomodule src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js"></script>
         <model-viewer src={{AndroidModel}} ios-src={{iOSModel}}  ar="" auto-rotate="" camera-controls="" shadow-intensity="1" alt=”3D Model of your Docking Job”></model-viewer>
     </section>
+    {% endif %}
 
-
+    {% if report == 'exists' %}
     <h3>PDF Report</h3>
     <section>
         <iframe src={{PDFReport}} id="report"></iframe>
     </section>
+    {% endif %}
 
     
 
-{% endif %}
 
     <section>
         <style>
