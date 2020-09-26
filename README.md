@@ -39,9 +39,9 @@ Once you have installed docker, make sure to pull the following images (Otherwis
 
 ### 1.2 PLIP
 
-Install from [pharmai/plip](https://github.com/pharmai/plip). 
+* Install from [pharmai/plip](https://github.com/pharmai/plip). 
 
-In case you have problems installing it, install it from the forked repo [navanchauhan/plip](https://github.com/navanchauhan/plip)
+* In case you have problems installing it, install it from the forked repo [navanchauhan/plip](https://github.com/navanchauhan/plip)
 
 ### 1.3 PyMOL with Python Bindings (version >= 2.0)
 
@@ -51,11 +51,23 @@ In case you have problems installing it, install it from the forked repo [navanc
 
 ### 1.4 Open-Babel (version >= 3.0)
 
-macOS users can use Homebrew to install it via `brew install open-babel`
+* macOS users can use Homebrew to install it via `brew install open-babel`
 
-Users using apt can install it via `sudo apt install openbabel python3-openbabel`
+* Users using apt can install it via `sudo apt install openbabel python3-openbabel`
 
-### 1.5 Tensorflow (Optional)
+### 1.5 AutoDock-Vina
+
+* Install from package manager or follow steps at http://vina.scripps.edu/download.html
+
+### 1.6 Pandoc, Minimal TeX and ImageMagick
+
+* TeX is required for Pandoc's funcitonality for converting markdown to PDFs
+
+* macOS users can use Homebrew to first install mactex `brew cask install mactex-no-gui` and then the rest by `brew install pandoc imagemagick`
+
+* Users using apt can install via `sudo apt-get install pandoc texlive-xetex imagemagick`
+
+### x.x Tensorflow (Optional)
 
 Please ensure you install Tensorflow 2.x.
 
