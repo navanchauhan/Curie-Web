@@ -5,9 +5,9 @@ import os
 import sys
 from argparse import ArgumentParser
 from collections import namedtuple
-
+from misc.common import get3DModel, CopyContentOfFolder, RemoveAllFilesMatching
 import mysql.connector as con
-
+from misc.email import email
 import configparser
 iniConfig = configparser.ConfigParser()
 iniConfig.read('config.ini')
@@ -36,7 +36,6 @@ records = records[0]
 print("Importing PLIP..",end="")
 
 from plip.basic import config, logger
-
 from plip.basic.config import __version__
 from plip.basic.parallel import parallel_fn
 from plip.basic.remote import VisualizerData
@@ -99,15 +98,6 @@ def bounding_box(receptor, residues):
     
     return {"size_x": SizeX, "size_y": SizeY, "size_z": SizeZ, "center_x": CenterX, "center_y": CenterY, "center_z": CenterZ}
 
-def get3DModel(protein,ligand):
-	import pymol2
-	session = pymol2.PyMOL()
-	session.start()
-	cmd = session.cmd
-	cmd.load(protein,"target")
-	cmd.load(ligand,"ligand")
-	cmd.save("model.dae")
-	session.stop()
 
 def removeWater(pdbpath):
 	import pymol2
@@ -176,83 +166,47 @@ def convert_pdb_pdbqt(pdbpath):
 	return path
 
 
-def email(zipArchive):
-    import smtplib 
-    from email.mime.multipart import MIMEMultipart 
-    from email.mime.text import MIMEText 
-    from email.mime.base import MIMEBase 
-    from email import encoders 
-    
-    fromaddr = iniConfig['SMTP']['EMAIL']
-    
-    msg = MIMEMultipart()  
-    msg['From'] = fromaddr 
-    msg['To'] = toaddr   
-    msg['Subject'] = "Curie Web Results for Job ID " + str(jobID)
-    body = "Attached Zip contains the docked files, PLIP report and PyMOL Visualisations. If the ZIP file does not contain these files, please report this issue by replying to this email. Job was submitted on {} with the description {}".format(date, description)
-    
-    msg.attach(MIMEText(body, 'plain')) 
-    filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip"
-    p = MIMEBase('application', 'octet-stream') 
-    with open((str(zipArchive) + ".zip"), "rb") as attachment:
-        p.set_payload((attachment).read()) 
-    encoders.encode_base64(p) 
-    p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
-    msg.attach(p) 
-    
-    s = smtplib.SMTP(iniConfig['SMTP']['SERVER'], iniConfig['SMTP']['PORT']) 
-    s.starttls() 
-    s.login(fromaddr, iniConfig['SMTP']['PASSWORD']) 
-    text = msg.as_string() 
-    
-    s.sendmail(fromaddr, toaddr, text) 
-    s.quit() 
-
-
-def CopyContentOfFolder(sauce,destination):
-	src_files = os.listdir(sauce)
-	for file_name in src_files:
-		full_file_name = os.path.join(sauce, file_name)
-		if os.path.isfile(full_file_name):
-			copy(full_file_name, destination)
-
-def RemoveAllFilesMatching(directory,pattern):
-	print(directory+"/*"+pattern)
-	FileList = glob.glob(directory+"/*"+pattern)
-	for FilePath in FileList:
-		try:
-			os.remove(FilePath)
-		except:
-			print("Error in removing misc file")
-
 inPDB = records[2]
 jobID = records[0]
 toaddr = records[1]
 description = records[5]
 date = records[6]
 
-#pdb_file_name = pdbpath.split('/')[-1]
-#pdbpath="./6lu7.pdb"
 
-import os,glob
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
 scripts = os.path.join(cd,"scripts")
 reportDirectory = os.path.join(f,"reports")
 modelDirectory = os.path.join(f,"3DModels")
-#t = os.path.join(f,"receptor",target)
-#r = os.path.join(f,"ligands",ligand)
-#c = os.path.join(f,"configs",config)
 import tempfile
 from shutil import make_archive, copyfile,copy
 import time
 
+
+
 with tempfile.TemporaryDirectory() as directory:
 	print('The created temporary directory is %s' % directory)
 	os.chdir(directory)
-	pdbpath, pdbid = download_structure(inPDB)
+	
+	try:
+		pdbpath, pdbid = download_structure(inPDB)
+	except:
+		reason = "Could not download PDB with the id " + str(inPDB) + ". "
+		email(toaddr,jobID,date,description,reason=reason)
+		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+		mycon.commit()
+		sys.exit(0)	
+
 	residues = getResidues(pdbpath)
-	selectionResidues = get_select_command(residues,allResidues=False)
+	
+	try:
+		selectionResidues = get_select_command(residues,allResidues=False)
+	except IndexError:
+		reason = "Could not find binding site automatically. "
+		email(toaddr,jobID,date,description,reason=reason)
+		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+		mycon.commit()
+		sys.exit(0)	
 	#print(selectionResidues)
 	removeWater(pdbpath)
 	config = bounding_box(pdbpath,selectionResidues)
@@ -272,8 +226,22 @@ with tempfile.TemporaryDirectory() as directory:
 	z = "Curie_Web_Result_"+str(jobID)
 	zi = os.path.join(f,z)
 	make_archive(zi, 'zip', directory)
-	copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
-	get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
+	try:
+		copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
+	except:
+		reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
+		email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
+		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+		mycon.commit()
+		sys.exit(0)	
+	try:
+		get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
+	except:
+		reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
+		email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
+		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+		mycon.commit()
+		sys.exit(0)	 
 	os.system("collada2gltf -i model.dae -o model.gltf")
 	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
 	arch = os.popen("uname -m").read()
@@ -286,6 +254,6 @@ with tempfile.TemporaryDirectory() as directory:
 		copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
 	except:
 		print("Could not generate USDZ file")
-	email(zi)
+	email(toaddr,jobID,date,description,zipArchive=zi)
 	mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
 	mycon.commit()

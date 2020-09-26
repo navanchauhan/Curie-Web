@@ -1,6 +1,10 @@
 import mysql.connector as con
-
+from misc.common import get3DModel, CopyContentOfFolder, RemoveAllFilesMatching
+from misc.email import email
+import os
 import configparser
+import sys
+
 iniConfig = configparser.ConfigParser()
 iniConfig.read('config.ini')
 
@@ -21,69 +25,6 @@ if records == []:
     print("No active task, exitting gracefully")
     exit(0)
 
-def email(zipArchive):
-    import smtplib 
-    from email.mime.multipart import MIMEMultipart 
-    from email.mime.text import MIMEText 
-    from email.mime.base import MIMEBase 
-    from email import encoders 
-    
-    fromaddr = iniConfig['SMTP']['EMAIL']
-    toaddr = toEmail
-    
-    msg = MIMEMultipart()  
-    msg['From'] = fromaddr 
-    msg['To'] = toaddr   
-    msg['Subject'] = "Curie Web Results for Job ID " + str(jobID)
-    body = "Attached Zip contains the docked files, PLIP report and PyMOL Visualisations. If the ZIP file does not contain these files, please report this issue by replying to this email. Job was submitted on {} with the description {}".format(date, description)
-    
-    msg.attach(MIMEText(body, 'plain')) 
-    filename = "Curie_Web_Results_Job_ID_" + str(jobID) + ".zip"
-    p = MIMEBase('application', 'octet-stream') 
-    with open((str(zipArchive) + ".zip"), "rb") as attachment:
-        p.set_payload((attachment).read()) 
-    encoders.encode_base64(p) 
-    p.add_header('Content-Disposition', "attachment; filename= %s" % filename) 
-    msg.attach(p) 
-    
-    s = smtplib.SMTP(iniConfig['SMTP']['SERVER'], iniConfig['SMTP']['PORT']) 
-    s.starttls() 
-    s.login(fromaddr, iniConfig['SMTP']['PASSWORD']) 
-    text = msg.as_string() 
-    
-    s.sendmail(fromaddr, toaddr, text) 
-    s.quit() 
-
-def get3DModel(protein,ligand):
-    try:
-        import pymol2
-    except ImportError:
-        print("🤭 PyMOL 2 has not been installed correctly")
-        return None
-    session = pymol2.PyMOL()
-    session.start()
-    cmd = session.cmd
-    cmd.load(protein,"target")
-    cmd.load(ligand,"ligand")
-    cmd.save("model.dae")
-    session.stop()
-
-def CopyContentOfFolder(sauce,destination):
-	src_files = os.listdir(sauce)
-	for file_name in src_files:
-		full_file_name = os.path.join(sauce, file_name)
-		if os.path.isfile(full_file_name):
-			copy(full_file_name, destination)
-
-def RemoveAllFilesMatching(directory,pattern):
-	print(directory+"/*"+pattern)
-	FileList = glob.glob(directory+"/*"+pattern)
-	for FilePath in FileList:
-		try:
-			os.remove(FilePath)
-		except:
-			print("Error in removing misc file")
-
 receptor_name = "protein.pdbqt"
 ligand_name = "ligand.pdbqt"
 description = "Curie Web Task"
@@ -92,6 +33,7 @@ description = "Curie Web Task"
 r = records[0]
 jobID = r[0]
 toEmail = r[1]
+toaddr = toEmail
 targetB = r[2]
 if r[3] is not None:
     receptor_name = str(r[3])
@@ -102,17 +44,15 @@ configB = r[7]
 date = r[8]
 if r[9] is not None:
     description = r[9]
+else:
+    description = "not specified"
 
-import os,glob
 cd = os.getcwd()
 f = os.path.join(cd,"static/uploads")
 reportDirectory = os.path.join(f,"reports")
 scripts = os.path.join(cd,"scripts")
 modelDirectory = os.path.join(f,"3DModels")
-#t = os.path.join(f,"receptor",target)
-#r = os.path.join(f,"ligands",ligand)
-#c = os.path.join(f,"configs",config)
-print(f)
+
 import tempfile
 from shutil import make_archive, copyfile,copy
 
@@ -134,14 +74,27 @@ with tempfile.TemporaryDirectory() as directory:
     z = "Curie_Web_Result_"+str(jobID)
     zi = os.path.join(f,z)
     make_archive(zi, 'zip', directory)
-    copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
-    get3DModel(receptor_name,ligand_name.replace(".pdbqt","_out.pdbqt"))
+    try:
+        copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
+    except:
+        reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
+        email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
+        mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+        mycon.commit()
+        sys.exit(0)	
+    res = get3DModel(receptor_name,ligand_name.replace(".pdbqt","_out.pdbqt"))
+    if res == None:
+        reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
+        email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
+        mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
+        mycon.commit()
+        sys.exit(0)	 
     os.system("collada2gltf -i model.dae -o model.gltf")
     try:
         copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
     except:
         print("Does not have Collada2GLTF Installed")
-        email(zi)
+        email(toaddr,jobID,date,description,zipArchive=zi)
         mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
         mycon.commit()
         exit(0)
@@ -155,6 +108,6 @@ with tempfile.TemporaryDirectory() as directory:
         copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
     except:
         print("Could not generate USDZ file")
-    email(zi)
+    email(toaddr,jobID,date,description,zipArchive=zi)
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
     mycon.commit()    
