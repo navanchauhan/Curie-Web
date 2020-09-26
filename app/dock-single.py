@@ -228,7 +228,7 @@ with tempfile.TemporaryDirectory() as directory:
 	make_archive(zi, 'zip', directory)
 	try:
 		copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
-	except:
+	except FileNotFoundError:
 		reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
 		email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
 		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
