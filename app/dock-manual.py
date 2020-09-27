@@ -94,9 +94,9 @@ with tempfile.TemporaryDirectory() as directory:
     arch = os.popen("uname -m").read()
     print("Generating 3D Model")
     if "x86" in arch:
-        os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
+        os.system("docker run --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
     elif "aarch64" in arch:
-        os.system("docker run -it --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
+        os.system("docker run --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
     try:
         copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
     except FileNotFoundError:

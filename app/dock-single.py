@@ -167,6 +167,7 @@ date = records[6]
 
 
 cd = os.getcwd()
+print("Curie-Web Directory is:",cd)
 f = os.path.join(cd,"static/uploads")
 scripts = os.path.join(cd,"scripts")
 reportDirectory = os.path.join(f,"reports")
@@ -222,27 +223,29 @@ with tempfile.TemporaryDirectory() as directory:
 	try:
 		copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
 	except FileNotFoundError:
-		reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
+		reason = "Could not generate the PDF report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
 		email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
 		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
 		mycon.commit()
 		sys.exit(0)	
+	"""
 	try:
 		get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
 	except:
-		reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
-		email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
+		email(toaddr,jobID,date,description,zipArchive=zi)
 		mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
 		mycon.commit()
 		sys.exit(0)	 
+	"""
+	get3DModel(pdbpath,"%s_out.pdbqt"%(records[4]))
 	os.system("collada2gltf -i model.dae -o model.gltf")
 	copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
 	arch = os.popen("uname -m").read()
 	print("Generating 3D Model")
 	if "x86" in arch:
-		os.system("docker run -it --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
+		os.system("docker run --rm -v $(pwd):/usr/app leon/usd-from-gltf:latest model.gltf model.usdz")
 	elif "aarch64" in arch:
-		os.system("docker run -it --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
+		os.system("docker run --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
 	try:
 		copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
 	except:
