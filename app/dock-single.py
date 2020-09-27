@@ -5,17 +5,10 @@ import os
 import sys
 from argparse import ArgumentParser
 from collections import namedtuple
-from misc.common import get3DModel, CopyContentOfFolder, RemoveAllFilesMatching
 import mysql.connector as con
+from misc.common import get3DModel, CopyContentOfFolder, RemoveAllFilesMatching
 from misc.email import email
-import configparser
-iniConfig = configparser.ConfigParser()
-iniConfig.read('config.ini')
-
-try:
-    iniConfig['DATABASE']
-except KeyError:
-    iniConfig.read("../config.ini")
+from misc.config import iniConfig
 
 mycon = con.connect(host=iniConfig['DATABASE']['HOST'],user=iniConfig['DATABASE']['USER'],password=iniConfig['DATABASE']['PASSWORD'],port=iniConfig['DATABASE']['PORT'],database=iniConfig['DATABASE']['NAME'])
 mycursor = mycon.cursor()

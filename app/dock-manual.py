@@ -2,16 +2,9 @@ import mysql.connector as con
 from misc.common import get3DModel, CopyContentOfFolder, RemoveAllFilesMatching
 from misc.email import email
 import os
-import configparser
 import sys
 
-iniConfig = configparser.ConfigParser()
-iniConfig.read('config.ini')
-
-try:
-    iniConfig['DATABASE']
-except KeyError:
-    iniConfig.read("../config.ini")
+from misc.config import iniConfig
 
 mycon = con.connect(host=iniConfig['DATABASE']['HOST'],user=iniConfig['DATABASE']['USER'],password=iniConfig['DATABASE']['PASSWORD'],port=iniConfig['DATABASE']['PORT'],database=iniConfig['DATABASE']['NAME'])
 mycursor = mycon.cursor()
@@ -76,7 +69,7 @@ with tempfile.TemporaryDirectory() as directory:
     make_archive(zi, 'zip', directory)
     try:
         copyfile("report.pdf",os.path.join(reportDirectory,(str(jobID)+".pdf")))
-    except:
+    except FileNotFoundError:
         reason = "Could not generate the report, this could be because of a failed docking job. Please check the ZIP archive for the configuration and converted PDBQTs and try submitting manually. "
         email(toaddr,jobID,date,description,zipArchive=zi,reason=reason)
         mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
@@ -92,7 +85,7 @@ with tempfile.TemporaryDirectory() as directory:
     os.system("collada2gltf -i model.dae -o model.gltf")
     try:
         copyfile("model.gltf",os.path.join(modelDirectory,(str(jobID)+".gltf")))
-    except:
+    except FileNotFoundError:
         print("Does not have Collada2GLTF Installed")
         email(toaddr,jobID,date,description,zipArchive=zi)
         mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
@@ -106,7 +99,7 @@ with tempfile.TemporaryDirectory() as directory:
         os.system("docker run -it --rm -v $(pwd):/usr/app navanchauhan/usd-from-gltf:latest model.gltf model.usdz")
     try:
         copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
-    except:
+    except FileNotFoundError:
         print("Could not generate USDZ file")
     email(toaddr,jobID,date,description,zipArchive=zi)
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
