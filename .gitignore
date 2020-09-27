@@ -20,3 +20,8 @@ venv/
 
 # Logs
 *.log
+
+
+# Personal Configs
+config.ini.bak
+config.ini.git
