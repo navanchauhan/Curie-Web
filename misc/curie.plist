@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.navanchauhan.curieweb</string>
+    <key>WorkingDirectory</key>
+    <string>/Users/navanchauhan/Desktop/nCOV-19/scripts/PythonModule/web-interface/</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/curieweb.err</string>
+    <key>StandardOutPath</key>
+    <string>/tmp/curieweb.out</string>    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/TeX/texbin</string>
+    </dict>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/usr/local/bin/gunicorn</string>
+        <string>api:app</string>
+	<string>-k</string>
+	<string>uvicorn.workers.UvicornWorker</string>
+	<string>-b</string>
+	<string>0.0.0.0:7589</string>
+    </array>
+    <key>KeepAlive</key>
+    <true/>
+</dict>
+</plist>
