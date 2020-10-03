@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+from datetime import datetime
 import argparse
 
 parser = argparse.ArgumentParser(description="Get Docking Score")
@@ -21,7 +21,11 @@ ligand = args.ligand
 
 from os.path import basename
 
-print("# " + str(basename(protein)).replace(".pdbqt","") + "-" + str(basename(ligand)).replace("_out.pdbqt",""), end="\n\n")
+print("% Molecular Docking of " + str(basename(ligand)).replace("_out.pdbqt","") + " with " +str(basename(protein)).replace(".pdbqt",""))
+print("%")
+print("% " + str(datetime.now().strftime("%b %d, %Y")))
+
+print("![Structure of %s](compound.svg)"%(str(basename(ligand)).replace("_out.pdbqt","")),end="\n\n")
 
 from tabulate import tabulate
 
@@ -41,6 +45,6 @@ for line in lines:
     if ta != []:
         results.append(ta)
 
-print("## Docking Scores",end="\n\n")
+print("# Docking Score",end="\n\n")
 print(tabulate(results,headers=["No.","Affinity","rmsd l.b","rmsd u.b"]))
 print("",end="\n\n")

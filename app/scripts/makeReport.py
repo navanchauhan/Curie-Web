@@ -49,7 +49,7 @@ name = doc.report.pdbid.cdata
 # print(("# " + (name.replace("_"," ")).replace("PROTEIN","")), end="\n\n")
 fallback = 0
 
-print("## Visualisation", end="\n\n")
+print("# Visualisation", end="\n\n")
 print(f"![]({image})", end="\n\n")
 
 natural_ligands = []

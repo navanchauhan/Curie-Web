@@ -1,4 +1,4 @@
-print("## Figures", end="\n\n")
+print("# Figures", end="\n\n")
 
 print("![Back View](output-back.png){width=100%}", end="\n\n")
 print("![Front View](output-front.png){width=100%}", end="\n\n")

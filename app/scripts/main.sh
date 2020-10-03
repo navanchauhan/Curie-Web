@@ -142,6 +142,8 @@ fi
 if [[ $interactions == "true" ]]; then
     file=$(echo "$ligandPath" | cut -f 1 -d '.')
     python3 ./get-best.py -p $proteinPath -l "$(echo $file)_out.pdbqt"
+    echo "Generating SVG of Compound"
+    obabel $ligandPath -O compound.svg
     echo "Running PLIP"
     plip -f best.pdb -qpxy
     echo "Getting Dock Score"
