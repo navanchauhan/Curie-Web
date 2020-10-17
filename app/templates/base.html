@@ -29,6 +29,15 @@
           <li class="{{ 'nav-item active' if active_page == 'about' else 'nav-item' }}">
             <a class="nav-link" href="{{ url_for('about') }}">About</a>
           </li>
+          <li class="{{ 'nav-item dropdown active' if active_page == 'analyse' else 'nav-item dropdown' }}">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Analyse
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{{ url_for('propalert') }}">Property and Alerts</a>
+              <a class="dropdown-item" href="#">Druggability</a>
+            </div>
+          </li>
           <li class="{{ 'nav-item dropdown active' if active_page == 'dock' else 'nav-item dropdown' }}">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Dock and Report

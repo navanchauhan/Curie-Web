@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% set active_page = "analyse" %}
+{% block main %}
+    <h1>Chemical Properties and Alerts</h1>
+    <form action="{{ url_for('propalert') }}" method="post" enctype="multipart/form-data">
+        {% include 'flash_messages.html' %}
+        {{ form.csrf_token }}
+        <div class="form-row">
+                {{ form.query.label }}
+                {{ form.query(class="form-control")}}
+        </div>
+        <!--<div class="form-row">
+            {\{ form.modelSelection.label }}
+            {\{ form.modelSelection(class="form-control")}}
+        </div>-->
+        <br>
+        <div class="form-row">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+
+    {% if complete %}
+      <br>
+        <h3>Properties</h3>
+
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th scope="col">Property</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+        {% for x in prop %}
+          <tbody>
+            <tr>
+              <th scope="row">{{x}}</th>
+              <td>{{prop[x]}}</td>
+            </tr>
+          </tbody>
+        {% endfor %}
+      </table>
+
+      {% if perfect %}
+        <h3>No alerts for the given compound.</h3>
+      {% endif %}
+
+        <div class="card-deck row-cols-2">
+        {% for x in range(result|length) %}
+
+        <div class="card" style="width: 18rem;">
+          <div class="card-img-top">
+            {{result[x]["SVG"] | safe }}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{result[x]["Name"]}}</h5>
+            <p class="card-text">{{result[x]["Description"]}}</p>
+            <a href="#" class="btn btn-primary">Read Paper</a>
+          </div>
+        </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+
+    
+
+{% endblock %}
