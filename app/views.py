@@ -17,6 +17,8 @@ import subprocess
 import mysql.connector as con
 from mysql.connector.errors import InterfaceError,DatabaseError
 
+
+
 import requests
 
 import logging
@@ -31,6 +33,8 @@ import configparser
 misc = configparser.ConfigParser()
 misc.read('app/misc.ini')
 errors = misc['ERRORS']
+AlertSMARTS = misc['ALERT_SMARTS']
+AlertDescription = misc['ALERT_DESCRIPTION']
 
 base = os.getcwd()
 
@@ -120,6 +124,47 @@ def pubchem():
         print(search)
         return render_template('search-pubchem.html',result=search,form=form)
     return render_template('search-pubchem.html',form=form)
+
+@app.route('/Properties',methods=['GET','POST'])
+def propalert():
+    form = PyMedSearch()
+
+    if request.method == 'POST' and form.validate_on_submit():
+        q = form.query.data
+        result = []
+        perfect = False
+        complete = False
+
+        try:
+            from rdkit import Chem
+        except ImportError:
+            return render_template('error.html',code="RD00",description=errors["RD00"])
+
+        if Chem.MolFromSmiles(q.strip()) is None:
+            print("invalid smiles")
+            return render_template('error.html',code="RD01",description=errors["RD01"])
+
+        for alert in AlertSMARTS:
+            print("Checking",alert,AlertSMARTS[alert])
+            records = {}
+            records['Name'] = alert
+            try:
+                records['SVG'] = get_svg(q,AlertSMARTS[alert])
+            except:
+                continue
+            records['Description'] = AlertDescription[alert]
+            result.append(records)
+
+        prop = get_prop(q)
+        print(prop)
+
+        complete = True
+
+        if len(result) == 0:
+            perfect = True
+
+        return render_template('mol-characteristics.html',complete=complete,result=result,form=form,perfect=perfect,prop=prop)
+    return render_template('mol-characteristics.html',form=form)
 
 @app.route('/Status',methods=['GET','POST'])
 def status():
@@ -427,3 +472,46 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port="8080")
+
+def get_svg(base,pattern):
+    try:
+        from rdkit.Chem.Draw import rdMolDraw2D
+        from rdkit import Chem
+    except:
+        return None # Need to add logic
+
+    mol = Chem.MolFromSmiles(base)
+    patt = Chem.MolFromSmarts(pattern)
+    hit_ats = list(mol.GetSubstructMatch(patt))
+    hit_bonds = []
+    for bond in patt.GetBonds():
+        aid1 = hit_ats[bond.GetBeginAtomIdx()]
+        aid2 = hit_ats[bond.GetEndAtomIdx()]
+        hit_bonds.append(mol.GetBondBetweenAtoms(aid1,aid2).GetIdx())
+    d = rdMolDraw2D.MolDraw2DSVG(500, 500)
+    rdMolDraw2D.PrepareAndDrawMolecule(d, mol, highlightAtoms=hit_ats, highlightBonds=hit_bonds)
+    return d.GetDrawingText().replace("width='500' height='500'","").replace("width='500px' height='500px'","")
+
+def get_prop(base):
+    try:
+        from rdkit import Chem
+        from rdkit.Chem import Crippen
+        from rdkit.Chem import Descriptors
+        from rdkit.Chem import rdMolDescriptors
+        from rdkit.Chem import Lipinski
+    except:
+        return None # Need to add logic
+    result = {}
+
+    mol = Chem.MolFromSmiles(base)
+    result["cLogP"] = Crippen.MolLogP(mol)
+    result["Molecular Weight"] = Descriptors.MolWt(mol)
+    result["TPSA"] = rdMolDescriptors.CalcTPSA(mol)
+    result["Hydrogen Bond Acceptors"] = Lipinski.NumHAcceptors(mol)
+    result["Hydrogen Bond Donors"] = Lipinski.NumHDonors(mol)
+    result["Rotable Bonds"] = Lipinski.NumRotatableBonds(mol)
+    result["Fraction SP3"]  = Lipinski.FractionCSP3(mol)
+
+
+    return result
+

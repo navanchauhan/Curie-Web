@@ -5,7 +5,7 @@
     <h2>Curie Web Demo</h2>
     <p>Curie-Web is a part of The Curie Project which aims to make the process of Computer-Aided Drug Design as fast as possible.</p>
     <p>The following are the currently active modules</p>
-    <h3>Docking</h3>
+    <h3>Dock and Generate Reports</h3>
     <ul>
         <li><a href="{{ url_for('dock_manual') }}">Dock and Report (Manual)</a> - You can enter your AutoDock Vina configuration, upload the PDBQT files and it will perform the molecular docking and generate a PDF with proper visualisations and protein-interaction profillings (Using PLIP) </li>
         <li><a href="{{ url_for('dock_automatic') }}">Dock and Report (Automatic)</a> - You just enter in the PDB Code, target compound's SMILES structure and name, it will automatically find a binding location and then perform docking and report generation</li>
@@ -16,11 +16,17 @@
         <li><a href="{{ url_for('generate') }}">Generate</a> - You can use this to generate completely new compounds</li>
     </ul>
 
-    <h3>Researching</h3>
+    <h3>Research</h3>
     <ul>
         <li><a href="{{ url_for('pubmed') }}">PubMed Search</a> - Handy PubMed search with direct download links</li>
         <li><a href="{{url_for('pubchem')}}">PubChem Search</a> - Get Compound SMILES</li>
         <li>Qrious App - You can enter a question for a set of papers (e.g. ChemRxiv preprints) and it uses AI to answer it for each individual paper based on their abstract</li>
+    </ul>
+
+    <h3>Analyse</h3>
+    <ul>
+        <li><a href="{{ url_for('propalert') }}">Chemical Properties and Alerts</a> - Find Chemical properties and check structure for alerts.</li>
+        <li><a href="#">Druggability</a> - Classify druggability of a compound using a ML Model.</li>
     </ul>
 
     <h3>Misc.</h3>
