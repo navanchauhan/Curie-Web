@@ -75,7 +75,7 @@ with tempfile.TemporaryDirectory() as directory:
         mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
         mycon.commit()
         sys.exit(0)	
-    """
+
     res = get3DModel(receptor_name,ligand_name.replace(".pdbqt","_out.pdbqt"))
     if res == None:
         reason = "Could not generate the 3D models."
@@ -102,7 +102,7 @@ with tempfile.TemporaryDirectory() as directory:
         copyfile("model.usdz",os.path.join(modelDirectory,(str(jobID)+".usdz")))
     except FileNotFoundError:
         print("Could not generate USDZ file")
-    """
+
     email(toaddr,jobID,date,description,zipArchive=zi)
     mycursor.execute('UPDATE curieweb set done=1 where id="%s"' % (jobID))
     mycon.commit()    
