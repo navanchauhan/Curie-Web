@@ -18,7 +18,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt update && sudo apt install python3-openbabel openbabel python-six git
+        sudo apt update && sudo apt install python3-openbabel openbabel python-six git libopenbabel-dev
         python -m pip install --upgrade pip six wheel
         python -m pip install oddt git+https://github.com/navanchauhan/plip
     - name: Verifying OpenBabel
