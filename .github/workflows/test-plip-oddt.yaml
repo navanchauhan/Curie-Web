@@ -6,7 +6,7 @@ jobs:
   build:
 
     runs-on: ubuntu-20.04
-    if: "! contains(github.event.head_commit.message, 'wip')"
+    if: "! contains(github.event.head_commit.message, 'disabled')"
     strategy:
       matrix:
         python-version: [3.8]
@@ -19,7 +19,10 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update && sudo apt install python3-openbabel openbabel python-six git
-        python -m pip install --upgrade pip six 
-        python -m pip install oddt git+https://github.com/navanchauhan/plip openbabel
+        python -m pip install --upgrade pip six wheel
+        python -m pip install oddt git+https://github.com/navanchauhan/plip
+    - name: Verifying OpenBabel
+      run: |
+        python3 -m pip install openbabel
     - name: Clean Test Data
       run: cd tests && python test-oddt-plip.py
