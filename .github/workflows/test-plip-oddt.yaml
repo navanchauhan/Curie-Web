@@ -21,8 +21,5 @@ jobs:
         sudo apt update && sudo apt install python3-openbabel openbabel python-six git libopenbabel-dev libopenbabel6
         python -m pip install --upgrade pip six wheel
         python -m pip install oddt git+https://github.com/navanchauhan/plip
-    - name: Verifying OpenBabel
-      run: |
-        python3 -m pip install openbabel
     - name: Clean Test Data
       run: cd tests && python test-oddt-plip.py
