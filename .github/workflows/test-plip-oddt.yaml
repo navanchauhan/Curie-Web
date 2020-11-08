@@ -1,0 +1,25 @@
+name: Test Curie Functions
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+    if: "! contains(github.event.head_commit.message, 'wip')"
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        apt update && apt install python3-openbabel openbabel
+        python -m pip install git
+        python3 -m pip install git+https://github.com/navanchauhan/plip oddt
+    - name: Clean Test Data
+      run: cd tests && python test-oddt-plip.py
