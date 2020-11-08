@@ -19,6 +19,7 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt update && sudo apt install python3-openbabel openbabel python-six git
-        python -m pip install --upgrade pip oddt git+https://github.com/navanchauhan/plip
+        python -m pip install --upgrade pip six 
+        python -m pip install oddt git+https://github.com/navanchauhan/plip
     - name: Clean Test Data
       run: cd tests && python test-oddt-plip.py
